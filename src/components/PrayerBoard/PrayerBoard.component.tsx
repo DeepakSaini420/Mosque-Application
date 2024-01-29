@@ -18,11 +18,11 @@ const PrayerBoard = ({name,location}:{name:string,location:string}): JSX.Element
         {
           currentMonthlyPrayers.length > 0 ? (
             <>
-              <Prayer prayerName={'Fajr'} prayerTime={currentMonthlyPrayers[0].Fajr.adan} isLast={false} />
-              <Prayer prayerName={'Duhur'} prayerTime={currentMonthlyPrayers[0].Duhur.adan} isLast={false} />
-              <Prayer prayerName={'Asr'} prayerTime={currentMonthlyPrayers[0].Asr.adan} isLast={false} />
-              <Prayer prayerName={'Maghrib'} prayerTime={currentMonthlyPrayers[0].Maghrib.adan} isLast={false} />
-              <Prayer prayerName={'Isha'} prayerTime={currentMonthlyPrayers[0].Isha.adan} isLast={true} />
+              <Prayer prayerName={'Fajr'} prayerTime={`${currentMonthlyPrayers[0].Fajr.adan} AM`} isLast={false} />
+              <Prayer prayerName={'Duhur'} prayerTime={`${currentMonthlyPrayers[0].Duhur.adan} PM`} isLast={false} />
+              <Prayer prayerName={'Asr'} prayerTime={currentMonthlyPrayers[0].Asr.adan.split(":")[0] > 12 ? `${currentMonthlyPrayers[0].Asr.adan.split(":")[0]-12}:${currentMonthlyPrayers[0].Asr.adan.split(":")[1]} PM`: `${currentMonthlyPrayers[0].Asr.adan} AM`} isLast={false} />
+              <Prayer prayerName={'Maghrib'} prayerTime={currentMonthlyPrayers[0].Maghrib.adan.split(":")[0] > 12 ? `${currentMonthlyPrayers[0].Maghrib.adan.split(":")[0]-12}:${currentMonthlyPrayers[0].Maghrib.adan.split(":")[1]} PM`: `${currentMonthlyPrayers[0].Maghrib.adan} AM`} isLast={false} />
+              <Prayer prayerName={'Isha'} prayerTime={currentMonthlyPrayers[0].Isha.adan.split(":")[0] > 12 ? `${currentMonthlyPrayers[0].Isha.adan.split(":")[0]-12}:${currentMonthlyPrayers[0].Isha.adan.split(":")[1]} PM`: `${currentMonthlyPrayers[0].Isha.adan} AM`} isLast={true} />
             </>
           ):(
             <Text>No Prayers..</Text>
