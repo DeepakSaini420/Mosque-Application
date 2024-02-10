@@ -1,6 +1,6 @@
 import React,{ useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {StyleSheet, SafeAreaView, Platform,Text,View,TouchableOpacity} from 'react-native';
+import {StyleSheet, SafeAreaView, Platform,Text,View,TouchableOpacity,StatusBar } from 'react-native';
 import { selectSelectedMosque } from '../../redux/mosques/mosqueSelector';
 import TimeShower from '../../components/TimeShowe/TimeShower.compoent';
 import TimeBoard from '../../components/TimeBoard/TimeBoard.component';
@@ -42,7 +42,7 @@ const Home = (): JSX.Element => {
 const styles = StyleSheet.create({
   HomeContainer: {
     flex: 1,
-    paddingTop:  Platform.OS === 'android' ? 30:0 ,
+    paddingTop:  Platform.OS === 'android' ? StatusBar.currentHeight:0 ,
     paddingLeft: 20,
     paddingRight: 20,
     backgroundColor: '#fff',

@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { collection,doc,getDoc,onSnapshot,getFirestore, query, getDocs } from 'firebase/firestore';
+import { collection,doc,getDoc,onSnapshot,getFirestore, updateDoc, setDoc } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword,GoogleAuthProvider,signInWithPopup, getRedirectResult, signOut } from 'firebase/auth'
 import { Mosques,Prayer } from '../redux/mosques/mosqueSlice';
 
@@ -26,8 +26,8 @@ const getAllMosquesNames = async ():Promise<Mosques[]>=>{
           const mosqueName:Mosques[] = [];
           docSnap.docs.forEach((doc) => {
             if (doc.exists()) {
-              const name = doc.data();
-              mosqueName.push({name: name.name ,id: doc.id,location:name.location});
+              const data = doc.data();;
+              mosqueName.push({name: data.name ,id: doc.id,location:data.location,Messages:data.Messages,Tokens:data.Tokens});
             }
           });
           resolve(mosqueName);
@@ -47,6 +47,7 @@ const getMosqueData = ({ id }:{id:string}):Promise<Prayer[]> => {
         docSnap.docs.forEach((doc)=>{
           if(doc.exists()){
             const data = doc.data();
+            
             mosquePrayers.push({month:data.month,prayers:data.prayer});
           }
         })
@@ -56,6 +57,28 @@ const getMosqueData = ({ id }:{id:string}):Promise<Prayer[]> => {
       reject(error);
     }
   })
+}
+
+const addTokenToMosque = async(token:string,mosqueName:string) =>{
+  const mosqueRef = doc(db,"mosques",mosqueName);
+
+  const data = (await getDoc(mosqueRef)).data();
+
+  let tokens:string[] = data?.Tokens || [];
+
+  let isPresent = tokens.find(tok => token===tok);
+
+  if(isPresent) return;
+
+  tokens.push(token);
+
+  try {
+    const resp = await updateDoc(mosqueRef,{
+      Tokens:tokens
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 const signUpUser = async(email:string,password:string)=>{
@@ -82,7 +105,6 @@ const signInWithGoogle = async()=>{
   try {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth,provider);
-
     const result = await getRedirectResult(auth);
     console.log(result);
   } catch (error) {
@@ -105,6 +127,7 @@ export {
     getMosqueData,
     signUpUser,
     loginUser,
+    addTokenToMosque,
     signInWithGoogle,
     SignOut
 };

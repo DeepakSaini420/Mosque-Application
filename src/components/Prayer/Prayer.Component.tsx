@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import * as Notifications from 'expo-notifications'
 
 interface prayerProps {
   prayerName: string;
@@ -32,8 +33,18 @@ const Prayer = ({prayerName, prayerTime, isLast}: prayerProps): JSX.Element => {
       icon = <Icon name={'moon'} color={'#bebabb'} size={23} />;
   }
 
-  const onPress = () => {
+  const onPress = async () => {
     setIconName(iconName === 'bell' ? 'bell-off' : 'bell');
+    console.log("hello")
+    const resp = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "You've got mail! 📬",
+        body: 'Here is the notification body',
+        data: { data: 'goes here' },
+      },
+      trigger: { seconds: 2 },
+    });
+    console.log(resp);
   };
 
   return (

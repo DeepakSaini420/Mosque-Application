@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {SafeAreaView, Text, View, StyleSheet, FlatList,Platform} from 'react-native';
+import {SafeAreaView, Text, View, StyleSheet, FlatList,Platform,StatusBar} from 'react-native';
 import { selectPrayer } from '../../redux/mosques/mosqueSelector';
 import PrayerCalendar from '../../components/PrayerCalendar/PrayerCalendar';
 
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop:  Platform.OS === 'android' ? 30:0 ,
+    paddingTop:  Platform.OS === 'android' ? StatusBar.currentHeight:0 ,
     color: '#fff',
     paddingLeft: 10,
     paddingRight: 10,

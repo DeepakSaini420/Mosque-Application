@@ -3,7 +3,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface Mosques{
     id:string,
     name:string,
-    location:string
+    location:string,
+    Messages:string[],
+    Tokens:string[]
 }
 
 export interface Prayer{
@@ -39,6 +41,7 @@ export const mosqueSlice = createSlice({
             state.prayers = action.payload
         },
         setCurrentMonthPrayers:(state,action:PayloadAction<any[]>)=>{
+            console.log(action.payload);
             state.currentMonthPrayers = action.payload;
         }
     }

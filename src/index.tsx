@@ -8,9 +8,10 @@ import { selectMosques,selectSelectedMosque } from './redux/mosques/mosqueSelect
 import Home from './screens/Home/Home.screen';
 import Calendar from './screens/Calendar/Calendar.screen';
 import CompassScreen from './screens/Compass/Compass.screen';
+import Settings from './screens/Settings/Settings.screen';
+import Notification from './screens/Notification/Notification.screen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon1 from 'react-native-vector-icons/Feather';
-import Settings from './screens/Settings/Settings.screen';
 
 const Index = (): JSX.Element => {
   const Tab = createBottomTabNavigator();
@@ -69,7 +70,7 @@ const Index = (): JSX.Element => {
         <Tab.Screen name="Mosque" component={Home} />
         <Tab.Screen name="Calendar" component={Calendar} />
         <Tab.Screen name="Compass" component={CompassScreen} />
-        <Tab.Screen name="Notification" component={Calendar} />
+        <Tab.Screen name="Notification" component={Notification} />
         <Tab.Screen name="Settings" component={Settings} />
       </Tab.Navigator>
     </NavigationContainer>

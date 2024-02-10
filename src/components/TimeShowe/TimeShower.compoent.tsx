@@ -1,13 +1,20 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import { useSelector } from 'react-redux';
+import { selectCurrentMonthPrayer } from '../../redux/mosques/mosqueSelector';
 
 const TimeShower = (): JSX.Element => {
   const [currentPrayer,setCurrentPrayer] = useState<string>();
+  const [endTime,setEndTime] = useState<string>('');
   const [currentTime, setCurrentTime] = useState({
     hours: 0,
     minutes: 0,
     time: '',
   });
+
+  const currentMonthlyPrayers = useSelector(selectCurrentMonthPrayer); 
+
+
   useEffect(() => {
     const timeInterval = setInterval(() => {
       const date = new Date();
@@ -20,15 +27,19 @@ const TimeShower = (): JSX.Element => {
 
       if(hours>=0 && hours<12){
         setCurrentPrayer('Fajr');
+        setEndTime(`${currentMonthlyPrayers[0].Fajr.iqama}AM`);
       }
       if(hours>=12 && hours<15){
         setCurrentPrayer('Duhur');
+        setEndTime(`${currentMonthlyPrayers[0].Duhur.iqama}PM`);
       }
       if(hours>=18 && hours<20){
         setCurrentPrayer('Maghrib');
+        setEndTime(`${currentMonthlyPrayers[0].Maghrib.iqama}PM`);
       }
       if(hours>=20 && hours<=23){
         setCurrentPrayer('Isha');
+        setEndTime(`${currentMonthlyPrayers[0].Isha.iqama}PM`);
       }
     }, 1000);
 
@@ -49,7 +60,7 @@ const TimeShower = (): JSX.Element => {
         <View style={styles.EndTime}>
           <Text style={styles.eTimeText}>End Time</Text>
           <Text style={styles.sepration}>-</Text>
-          <Text style={styles.eTime}>3:45PM</Text>
+          <Text style={styles.eTime}>{endTime}</Text>
         </View>
       </View>
     </View>

@@ -1,5 +1,5 @@
 import React,{ useState } from "react";
-import { SafeAreaView,View,Text,StyleSheet,Platform,TextInput,TouchableOpacity } from "react-native";
+import { SafeAreaView,View,Text,StyleSheet,Platform,TextInput,TouchableOpacity,StatusBar } from "react-native";
 import { signUpUser } from "../../../api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -58,7 +58,7 @@ const Signup = ({navigation}:{navigation:any}):JSX.Element =>{
 
 const styles = StyleSheet.create({
     backContainer:{
-        paddingTop : Platform.OS === "android" ? 30:0,
+        paddingTop : Platform.OS === "android" ? StatusBar.currentHeight:0,
         paddingLeft: 14,
     },
     titleContainer:{

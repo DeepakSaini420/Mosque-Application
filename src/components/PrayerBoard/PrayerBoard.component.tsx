@@ -8,6 +8,8 @@ const PrayerBoard = ({name,location}:{name:string,location:string}): JSX.Element
 
   const currentMonthlyPrayers = useSelector(selectCurrentMonthPrayer); 
 
+  console.log(currentMonthlyPrayers);
+
   return (
     <View style={styles.container}>
       <View style={styles.LocationContainer}>
