@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { TouchableOpacity,Text,StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import { Mosques, setCurrentMonthPrayers, setPrayers, setSelectedMosque } from "../../../redux/mosques/mosqueSlice";
@@ -12,23 +12,25 @@ const MosqueName = ({name,id,location,Tokens,Messages}:Mosques)=>{
     const onPress = async ()=>{
         const date = new Date();
 
-        dispatch(setSelectedMosque({name,id,location,Tokens,Messages}));
+        
         
         const prayer = await getMosqueData({id});
-        
+        console.log("prayers:- ",prayer)
         dispatch(setPrayers(prayer));
         
         prayer.map((data:any)=>{
             if(Number(data.month) === 1){
-              dispatch(setCurrentMonthPrayers(data.prayers));
+                dispatch(setCurrentMonthPrayers(data.prayers));
             }
         })
-
+        
+        dispatch(setSelectedMosque({name,id,location,Tokens,Messages}));
+        
         let token = await Notifications.getExpoPushTokenAsync({
             projectId: '66fbdec8-f5a2-4f30-95cd-89c6032e986f',
-          });
+        });
 
-        addTokenToMosque(token.data,id);
+        await addTokenToMosque(token.data,id);
     }
 
     return (

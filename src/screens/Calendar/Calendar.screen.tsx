@@ -20,7 +20,7 @@ const Calendar = (): JSX.Element => {
         setPrayer(data.prayers)
       }
     })
-  })
+  },[])
   console.log(prayer);
   return (
     <SafeAreaView style={styles.container}>

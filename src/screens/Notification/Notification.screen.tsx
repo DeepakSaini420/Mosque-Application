@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView,StatusBar,StyleSheet,Platform,View } from "react-native";
-import * as Notifications from 'expo-notifications'
+import { SafeAreaView,StatusBar,StyleSheet,Platform,View, Button,Text, FlatList} from "react-native";
+import { useSelector,useDispatch } from "react-redux";
+import { selectSelectedMosque } from "../../redux/mosques/mosqueSelector";
+import { addMessageToMosque } from "../../api";
 import NotificationMessage from "../../components/NotificationMessage/NotificationMessage.component";
+import * as Notifications from 'expo-notifications'
 
 const Notification = ():JSX.Element =>{
+    const dispatch = useDispatch();
     const [token,setToken] = useState<string>();
+    const selectedMosque = useSelector(selectSelectedMosque);
     useEffect(()=>{
         (async()=>{
             let token = await Notifications.getExpoPushTokenAsync({
@@ -13,10 +18,11 @@ const Notification = ():JSX.Element =>{
               setToken(token.data);
               console.log(token.data)
         })();
-    },[])
+    },[dispatch])
     const onPress = async()=>{
+        addMessageToMosque("Al-Aqusa mosque prayer updated","EzG9eEDHbSw7vVy2Varp");
         const body = JSON.stringify({
-            "to": [token],
+            "to": selectedMosque?.Tokens,
             "sound": "default",
             "body": "Al-Aqusa mosque prayer updated"
         })
@@ -32,11 +38,24 @@ const Notification = ():JSX.Element =>{
         })
         console.log(resp.status);
     }
+    console.log(selectedMosque);
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.NotificationContainer}>
-                <NotificationMessage/>
-            </View>
+            {selectedMosque ? (
+                <View style={styles.NotificationContainer}>        
+                    <View style={{marginTop:10}}>
+                        <Text style={{fontWeight:'bold',fontSize:16,letterSpacing:1}}>Notifications</Text>
+                    </View>
+                    <FlatList
+                        data={selectedMosque.Messages}
+                        renderItem={(data)=><NotificationMessage key={data.index} message={data.item} mosqueName={selectedMosque.name} />}
+                        scrollEnabled={true}
+                        
+                    />
+                </View>
+            ): <View>
+                    <Text>Please Select A Mosque</Text>
+                </View>}
         </SafeAreaView>
     )
 }

@@ -24,6 +24,7 @@ const TimeShower = (): JSX.Element => {
         minutes: date.getMinutes(),
         time: hours >= 12 ? 'Pm' : 'Am',
       });
+      
 
       if(hours>=0 && hours<12){
         setCurrentPrayer('Fajr');
@@ -33,7 +34,7 @@ const TimeShower = (): JSX.Element => {
         setCurrentPrayer('Duhur');
         setEndTime(`${currentMonthlyPrayers.length > 0 ? currentMonthlyPrayers[0].Duhur.iqama : '' }PM`);
       }
-      if(hours>=18 && hours<20){
+      if(hours>=15 && hours<20){
         setCurrentPrayer('Maghrib');
         setEndTime(`${currentMonthlyPrayers.length > 0 ? currentMonthlyPrayers[0].Maghrib.iqama : '' }PM`);
       }
@@ -46,7 +47,8 @@ const TimeShower = (): JSX.Element => {
     return () => {
       clearInterval(timeInterval);
     };
-  }, []);
+  }, [currentMonthlyPrayers]);
+
   return (
     <View style={styles.TimeContainer}>
       <View style={styles.TextContainer}>

@@ -12,10 +12,10 @@ const Settings = ():JSX.Element=>{
     const [selectMosque,setSelectMosque] = useState<boolean>(false);
 
     return (
-        <SafeAreaView style={styles.settingsContainer}>
-            <View style={{ alignItems:'center',zIndex:2 }}>
-                { selectMosque && <MosqueList/> }
-            </View>
+        <SafeAreaView style={styles.settingsContainer} >
+            <TouchableOpacity style={{ alignItems:'center',zIndex:2 }} onPress={()=>setSelectMosque(false)} >
+                { selectMosque && <MosqueList /> }
+            </TouchableOpacity>
             <View style={styles.profileContainer}>
                 <View style={styles.profile}>
                     <View>

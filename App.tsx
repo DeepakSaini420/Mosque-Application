@@ -88,7 +88,7 @@ const App = (): JSX.Element => {
 
   return (
     <Provider store={store}>
-      {isLoggedIn ? <Index/> : <Auth/>}
+      <Index/>
     </Provider>
   );
 };

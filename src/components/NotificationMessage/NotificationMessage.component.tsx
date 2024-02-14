@@ -1,14 +1,19 @@
 import React from "react";
 import { View,StyleSheet,Text } from "react-native"; 
 
-const NotificationMessage = ():JSX.Element => {
+interface NotificationMessageProps{
+    mosqueName:string,
+    message:string
+}
+
+const NotificationMessage = ({mosqueName,message}:NotificationMessageProps):JSX.Element => {
     return (
         <View style={styles.MessageContainer}>
             <View>
-                <Text style={styles.mosqueName}>Al Aqusa</Text>
+                <Text style={styles.mosqueName}>{mosqueName}</Text>
             </View>
             <View style={styles.notificationMessage}>
-                <Text>Hey This is My Notification Component</Text> 
+                <Text>{message}</Text> 
             </View>
         </View>
     )
@@ -16,14 +21,14 @@ const NotificationMessage = ():JSX.Element => {
 
 const styles = StyleSheet.create({
     MessageContainer:{
-        width:'95%',
+        width:350,
         backgroundColor:'white',
-        height:'13%',
+        height:80,
         borderRadius:5,
         padding:2,
         alignItems:'center',
         justifyContent:'center',
-        marginTop:15,
+        marginTop:15
     },
     mosqueName:{
         fontWeight:'bold'

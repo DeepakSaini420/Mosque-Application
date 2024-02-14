@@ -39,7 +39,7 @@ const CompassApp = () => {
       <Image 
         source={require('../../../assets/compass.png')}
         style={{transform:[{
-          rotate: heading ? `${heading}deg` : '0deg'
+          rotate: heading ? `-${heading}deg` : '0deg'
         }],width:380,height:380}}
       />
     </View>
