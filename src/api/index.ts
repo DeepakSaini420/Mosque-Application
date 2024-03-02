@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { collection,doc,getDoc,onSnapshot,getFirestore, updateDoc, setDoc, Unsubscribe } from 'firebase/firestore';
+import { collection,doc,getDoc,onSnapshot,getFirestore, updateDoc, setDoc, Unsubscribe,getDocs } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword,GoogleAuthProvider,signInWithPopup, getRedirectResult, signOut } from 'firebase/auth'
 import { Mosques,Prayer } from '../redux/mosques/mosqueSlice';
 // import { MosqueRef } from './collectionRef';
@@ -21,56 +21,16 @@ export const auth = getAuth(app);
 
 const mosqueRef = collection(db,'mosques');
 
-// export const func1 = async()=>{
-//   return MosqueRef.onSnapshot(
-//     async querySnapshot => {
-//       if(querySnapshot.size>0){
-//         await querySnapshot.forEach(async documentSnaphot=>{
-//           console.log(documentSnaphot.data());
-//         })
-//       }
-//     }
-//   )
-// }
+const getAllMosquesNames = async (): Promise<any> => {
+  const docsSnap =await getDocs(mosqueRef);
+  const mosques:any = [];
+  docsSnap.docs.map((doc:any)=>{
+    mosques.push({...doc.data(),id:doc.id});
+  })
 
-const getAllMosquesNames = async (callback:CallableFunction):Promise<Unsubscribe>=>{
-    // const promise = Promise.all([new Promise((resolve,reject)=>{
-    //   const unsubscribe = onSnapshot(mosqueRef, (docSnap) => {
-    //     let mosqueName:Mosques[] = [];
-    //     docSnap.docs.forEach((doc) => {
-    //       if (doc.exists()) {
-    //         const data = doc.data();
-    //         mosqueName.push({name: data.name ,id: doc.id,location:data.location,Messages:data.Messages,Tokens:data.Tokens});
-    //       }
-    //     });
-    //     resolve(mosqueName);
-        
-    //   }, (error) => {
-    //     console.error('Error fetching mosque names:', error);
-    //     reject(error);
-    //   });
-    // })]);
-    //   const data = await promise;
-    //   console.log(data)
-    //   if(callback) console.log("callback Present");
-    //   callback && callback(data[0]);
-    //   return promise;
-
-    const unsubscribe = onSnapshot(mosqueRef, (docSnap) => {
-          let mosqueName:Mosques[] = [];
-          docSnap.docs.forEach((doc) => {
-            if (doc.exists()) {
-              const data = doc.data();
-              mosqueName.push({name: data.name ,id: doc.id,location:data.location,Messages:data.Messages,Tokens:data.Tokens});
-            }
-          });
-          callback(mosqueName);
-        }, (error) => {
-          console.error('Error fetching mosque names:', error);
-        });
-        
-  return unsubscribe;
+  return mosques
 }
+
 
 const getMosqueData = ({ id }:{id:string}):Promise<Prayer[]> => {
   return new Promise(async (reslove,reject)=>{
@@ -91,6 +51,22 @@ const getMosqueData = ({ id }:{id:string}):Promise<Prayer[]> => {
       reject(error);
     }
   })
+}
+
+const getLiveMosqueData = ({ id }:{id:string}):any => {
+  const documentRef = collection(db,'mosques',id,'Prayers');
+  const mosquePrayers:Prayer[] = [];
+  const unsubscribe =  onSnapshot(documentRef,(docSnap)=>{
+      docSnap.docs.forEach((doc)=>{
+        if(doc.exists()){
+          const data = doc.data();
+          console.log(data);
+          mosquePrayers.push({month:data.month,prayers:data.prayer});
+        }
+      })
+    })
+
+  return unsubscribe;
 }
 
 const addTokenToMosque = async(token:string,mosqueName:string) =>{
@@ -117,17 +93,36 @@ const addTokenToMosque = async(token:string,mosqueName:string) =>{
 
 const addMessageToMosque = async(message:string,mosqueName:string)=>{
   
-  const mosqueRef = doc(db,"mosques",mosqueName);
+  const notificationsRef = doc(db,"notifications",mosqueName);
 
-  const data = (await getDoc(mosqueRef)).data();
+  const data = (await getDoc(notificationsRef)).data();
 
   let messages:string[] = data?.Messages;
   
   messages.push(message);
 
-  await updateDoc(mosqueRef,{
+  await updateDoc(notificationsRef,{
     Messages:messages
   })
+
+}
+
+const getMessages = async(mosqueName:string,callback:CallableFunction):Promise<any>=>{
+
+  const notificationsRef = doc(db,"notifications",mosqueName);
+
+  const unsubscribe =  onSnapshot(notificationsRef,(docSnap)=>{
+    if(docSnap.exists()){
+      console.log(docSnap.data());
+      const Messages = docSnap.data().Messages;
+      const name = docSnap.data().name;
+      callback({Messages,name});
+    }else{
+      callback(null);
+    }
+  })
+
+  return unsubscribe;
 
 }
 
@@ -180,5 +175,7 @@ export {
     addTokenToMosque,
     addMessageToMosque,
     signInWithGoogle,
+    getLiveMosqueData,
+    getMessages,
     SignOut
 };

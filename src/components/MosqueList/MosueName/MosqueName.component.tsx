@@ -12,12 +12,12 @@ const MosqueName = ({name,id,location,Tokens,Messages}:Mosques)=>{
     const onPress = async ()=>{
         const date = new Date();
 
-        
-        
         const prayer = await getMosqueData({id});
         console.log("prayers:- ",prayer)
         dispatch(setPrayers(prayer));
-        
+        if(prayer.length === 0) {
+            dispatch(setCurrentMonthPrayers([]));
+        }
         prayer.map((data:any)=>{
             if(Number(data.month) === 1){
                 dispatch(setCurrentMonthPrayers(data.prayers));

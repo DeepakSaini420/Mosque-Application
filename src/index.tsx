@@ -3,7 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { useDispatch,useSelector } from 'react-redux';
 import { Mosques, setMosques,setSelectedMosque,setPrayers,setCurrentMonthPrayers } from './redux/mosques/mosqueSlice';
-import { getAllMosquesNames,getMosqueData } from './api';
+import { getAllMosquesNames,getLiveMosqueData,getMosqueData } from './api';
 import { selectMosques,selectSelectedMosque } from './redux/mosques/mosqueSelector';
 import Home from './screens/Home/Home.screen';
 import Calendar from './screens/Calendar/Calendar.screen';
@@ -21,88 +21,25 @@ const Index = (): JSX.Element => {
   const selectedMosque = useSelector(selectSelectedMosque);
 
   useEffect(()=>{
-    // getAllMosquesNames(async (data:Mosques[])=>{
-    //   console.log("CallBackWorking");
-    //   dispatch(setMosques(data));
-    //   console.log("My data",data);
-    //   if(!selectedMosque){ 
-    //     console.log("heelo")
-    //     return
-    //   };
-    //   console.log("Before",selectedMosque);
-    //   const { id,Messages } = selectedMosque;
+    (async ()=>{
+      const data = await getAllMosquesNames();
+      console.log(data);
+      dispatch(setMosques(data));
+    })();
 
-    //   const newMosqueData = data.find((data)=>data.id === id);
-    //   console.log("After",newMosqueData);
-    //   console.log(selectedMosque)
-    //   const newMessages = newMosqueData?.Messages || [];
+  },[]);
 
-    //   if(!newMosqueData || newMessages.toString() === Messages.toString()) {
-    //     console.log("hello");
-    //     return
-    //   }
-    //   if(newMosqueData.id !== selectedMosque.id) return;
-
-    //   dispatch(setSelectedMosque(newMosqueData));
-
-    //   const prayer = await getMosqueData({id});
-        
-    //   dispatch(setPrayers(prayer));
-        
-    //   prayer.map((data:any)=>{
-    //     if(Number(data.month) === 1){
-    //       dispatch(setCurrentMonthPrayers(data.prayers));
-    //     }
-    //   })
-
-    // });
+  useEffect(()=>{
     let unsubscribe:any;
 
-    (async ()=>{
-      unsubscribe = await getAllMosquesNames(async (data:Mosques[])=>{
-        console.log(data);
-        dispatch(setMosques(data));
-        console.log("My data",data);
-        if(!selectedMosque){ 
-          console.log("heelo")
-          return
-        };
-        console.log("Before",selectedMosque);
-        const { id,Messages } = selectedMosque;
-
-        const newMosqueData = data.find((data)=>data.id === id);
-        console.log("After",newMosqueData);
-        console.log(selectedMosque)
-        const newMessages = newMosqueData?.Messages || [];
-
-        if(!newMosqueData || newMessages.toString() === Messages.toString()) {
-          console.log("hello");
-          return
-        }
-        if(newMosqueData.id !== selectedMosque.id) return;
-
-        dispatch(setSelectedMosque(newMosqueData));
-
-        const prayer = await getMosqueData({id});
-
-        console.log(prayer);
-          
-        dispatch(setPrayers(prayer));
-          
-        prayer.map((data:any)=>{
-          if(Number(data.month) === 1){
-            dispatch(setCurrentMonthPrayers(data.prayers));
-          }
-        })
-      })
-
-    })();
+    (async()=>{
+      unsubscribe =await getLiveMosqueData({id:'EzG9eEDHbSw7vVy2Varp'});
+    })()
 
     return ()=>{
       unsubscribe();
     }
-  },[selectedMosque]);
-
+  },[])
 
   return (
     <NavigationContainer>
@@ -139,7 +76,7 @@ const Index = (): JSX.Element => {
             return null;
           },
           tabBarActiveTintColor:'tomato',
-          tabBarInactiveTintColor: 'white',
+          tabBarInactiveTintColor: 'gray',
         })}>
         <Tab.Screen name="Mosque" component={Home} />
         <Tab.Screen name="Calendar" component={Calendar} />
