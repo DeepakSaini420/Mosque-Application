@@ -1,10 +1,12 @@
-import React,{ useEffect } from 'react';
+import React,{ useEffect, useRef, useState } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { useDispatch,useSelector } from 'react-redux';
-import { Mosques, setMosques,setSelectedMosque,setPrayers,setCurrentMonthPrayers } from './redux/mosques/mosqueSlice';
-import { getAllMosquesNames,getLiveMosqueData,getMosqueData } from './api';
-import { selectMosques,selectSelectedMosque } from './redux/mosques/mosqueSelector';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Mosques, setMosques,setSelectedMosque,setPrayers,setCurrentMonthPrayers, Prayer } from './redux/mosques/mosqueSlice';
+import { getAllMosquesNames,getMosqueData,getMosquePrayers } from './api';
+import { selectMosques,selectPrayer,selectSelectedMosque } from './redux/mosques/mosqueSelector';
+import NetInfo from '@react-native-community/netinfo';
 import Home from './screens/Home/Home.screen';
 import Calendar from './screens/Calendar/Calendar.screen';
 import CompassScreen from './screens/Compass/Compass.screen';
@@ -13,33 +15,76 @@ import Notification from './screens/Notification/Notification.screen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon1 from 'react-native-vector-icons/Feather';
 
+
+
 const Index = (): JSX.Element => {
   const Tab = createBottomTabNavigator();
+
+  const  isConnected= useRef<boolean|null>(false);
 
   const dispatch = useDispatch();
 
   const selectedMosque = useSelector(selectSelectedMosque);
+  const prayers = useSelector(selectPrayer);
+
+  NetInfo.addEventListener(async (state) => {
+
+    // setIsConnected(state.isConnected);
+    isConnected.current = state.isConnected;
+
+    
+    if(!state.isConnected){
+      const data = await AsyncStorage.getItem("Mosque");
+      const data1 = await AsyncStorage.getItem("Prayers");
+    }
+  });
 
   useEffect(()=>{
+
     (async ()=>{
-      const data = await getAllMosquesNames();
-      console.log(data);
-      dispatch(setMosques(data));
+      try {
+        const data = await getAllMosquesNames();
+        console.log(data);
+        dispatch(setMosques(data));
+        
+      } catch (error) {
+        const data = await AsyncStorage.getItem("Mosque");
+        if(data){
+          dispatch(setMosques(JSON.parse(data)));
+        }
+      }
     })();
 
   },[]);
+  
+  useEffect(()=>{
+    (async()=>{
+      const mosque = await AsyncStorage.getItem("Mosque");
+      if(mosque){
+        setSelectedMosque(JSON.parse(mosque));
+      }
+    })();
+  },[]);
 
   useEffect(()=>{
-    let unsubscribe:any;
-
-    (async()=>{
-      unsubscribe =await getLiveMosqueData({id:'EzG9eEDHbSw7vVy2Varp'});
-    })()
-
-    return ()=>{
-      unsubscribe();
+    if(!isConnected.current && selectedMosque) {
+      (async()=>{
+        const prayers = await AsyncStorage.getItem("Prayers");
+        if(prayers){
+          setPrayers(JSON.parse(prayers));
+        }
+      })();
     }
-  },[])
+    if(prayers.length === 0) {
+      dispatch(setCurrentMonthPrayers([]));
+    }
+    prayers.map((data:any)=>{
+        if(Number(data.month) === 3){
+            dispatch(setCurrentMonthPrayers(data.prayer));;
+        }
+    })
+  },[selectedMosque]);
+
 
   return (
     <NavigationContainer>

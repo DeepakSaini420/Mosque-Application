@@ -2,7 +2,6 @@ import React, { useEffect, useState,useRef } from 'react';
 import { Provider } from 'react-redux';
 import Index from './src';
 import store  from './src/redux/store';
-import Auth from './src/screens/Auth';
 import { auth } from './src/api';
 import { onAuthStateChanged } from 'firebase/auth';
 import { Platform } from 'react-native';

@@ -4,10 +4,10 @@
     "slug": "Mosque",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/kaaba.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/kaaba.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

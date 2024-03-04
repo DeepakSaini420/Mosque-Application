@@ -57,7 +57,7 @@ const Notification = ():JSX.Element =>{
         })
         console.log(resp.status);
     }
-    console.log(selectedMosque);
+    
     return (
         <SafeAreaView style={styles.container}>
             {selectedMosque ? (

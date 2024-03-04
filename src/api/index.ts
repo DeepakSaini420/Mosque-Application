@@ -53,21 +53,34 @@ const getMosqueData = ({ id }:{id:string}):Promise<Prayer[]> => {
   })
 }
 
-const getLiveMosqueData = ({ id }:{id:string}):any => {
-  const documentRef = collection(db,'mosques',id,'Prayers');
+const getMosquePrayers = async (id:string):Promise<Prayer[]> =>{
+  const prayersRef = collection(db,"mosques",id,"Prayers");
+  const prayerDocs = await getDocs(prayersRef);
   const mosquePrayers:Prayer[] = [];
-  const unsubscribe =  onSnapshot(documentRef,(docSnap)=>{
-      docSnap.docs.forEach((doc)=>{
-        if(doc.exists()){
-          const data = doc.data();
-          console.log(data);
-          mosquePrayers.push({month:data.month,prayers:data.prayer});
-        }
-      })
-    })
-
-  return unsubscribe;
+  prayerDocs.docs.map((doc:any)=>{
+    const data = doc.data();
+    mosquePrayers.push(data);
+  })
+  return mosquePrayers;
 }
+
+// const getLiveMosqueData = (id:string,callback:CallableFunction):any => {
+//   const documentRef = collection(db,'mosques',id,'Prayers');
+//   const mosquePrayers:Prayer[] = [];
+//   const unsubscribe =  onSnapshot(documentRef,(docSnap)=>{
+//       docSnap.docs.forEach((doc)=>{
+//         if(doc.exists()){
+//           const data = doc.data();
+//           console.log(data);
+//           mosquePrayers.push({month:data.month,prayers:data.prayer});
+//         }
+//       })
+
+//       callback(mosquePrayers);
+//     })
+
+//   return unsubscribe;
+// }
 
 const addTokenToMosque = async(token:string,mosqueName:string) =>{
   const mosqueRef = doc(db,"mosques",mosqueName);
@@ -173,9 +186,9 @@ export {
     signUpUser,
     loginUser,
     addTokenToMosque,
+    getMosquePrayers,
     addMessageToMosque,
     signInWithGoogle,
-    getLiveMosqueData,
     getMessages,
     SignOut
 };

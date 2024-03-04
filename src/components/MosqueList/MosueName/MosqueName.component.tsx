@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { TouchableOpacity,Text,StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import { Mosques, setCurrentMonthPrayers, setPrayers, setSelectedMosque } from "../../../redux/mosques/mosqueSlice";
-import { addTokenToMosque, getMosqueData } from "../../../api";
+import { addTokenToMosque, getMosquePrayers } from "../../../api";
 import * as Notifications from 'expo-notifications';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const MosqueName = ({name,id,location,Tokens,Messages}:Mosques)=>{
@@ -12,19 +13,17 @@ const MosqueName = ({name,id,location,Tokens,Messages}:Mosques)=>{
     const onPress = async ()=>{
         const date = new Date();
 
-        const prayer = await getMosqueData({id});
-        console.log("prayers:- ",prayer)
-        dispatch(setPrayers(prayer));
-        if(prayer.length === 0) {
-            dispatch(setCurrentMonthPrayers([]));
-        }
-        prayer.map((data:any)=>{
-            if(Number(data.month) === 1){
-                dispatch(setCurrentMonthPrayers(data.prayers));
-            }
-        })
+        const prayer = await getMosquePrayers(id);
         
-        dispatch(setSelectedMosque({name,id,location,Tokens,Messages}));
+        dispatch(setPrayers(prayer));
+        
+        const mosque = {name,id,location,Tokens,Messages};
+
+        dispatch(setSelectedMosque(mosque));
+
+        AsyncStorage.setItem('Prayers',JSON.stringify(prayer));
+        
+        AsyncStorage.setItem('Mosque',JSON.stringify(mosque));
         
         let token = await Notifications.getExpoPushTokenAsync({
             projectId: '66fbdec8-f5a2-4f30-95cd-89c6032e986f',
