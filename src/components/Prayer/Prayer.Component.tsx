@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import * as Notifications from 'expo-notifications'
@@ -10,8 +10,26 @@ interface prayerProps {
 }
 
 const Prayer = ({prayerName, prayerTime, isLast}: prayerProps): JSX.Element => {
+  const notificationListener = useRef<any>();
+  const responseListener = useRef<any>();
+
   const [iconName, setIconName] = useState('bell');
   let icon;
+
+  useEffect(()=>{
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      // setIconName( iconName==="bell" ? 'bell-off':"bell")
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log("resp",response);
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  },[]);
 
   switch (prayerName) {
     case 'Fajr':
@@ -38,8 +56,8 @@ const Prayer = ({prayerName, prayerTime, isLast}: prayerProps): JSX.Element => {
     console.log("hello")
     const resp = await Notifications.scheduleNotificationAsync({
       content: {
-        title: "You've got mail! 📬",
-        body: 'Here is the notification body',
+        title: "Prayer Time!!!",
+        body: `Time for your ${prayerName} Prayer!!`,
         data: { data: 'goes here' },
       },
       trigger: { seconds: 2 },

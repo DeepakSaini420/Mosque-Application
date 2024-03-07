@@ -13,15 +13,12 @@ const MosqueName = ({name,id,location,Tokens,Messages}:Mosques)=>{
     const onPress = async ()=>{
         const date = new Date();
 
-        const prayer = await getMosquePrayers(id);
-        
-        dispatch(setPrayers(prayer));
         
         const mosque = {name,id,location,Tokens,Messages};
 
         dispatch(setSelectedMosque(mosque));
 
-        AsyncStorage.setItem('Prayers',JSON.stringify(prayer));
+        // AsyncStorage.setItem('Prayers',JSON.stringify(prayer));
         
         AsyncStorage.setItem('Mosque',JSON.stringify(mosque));
         

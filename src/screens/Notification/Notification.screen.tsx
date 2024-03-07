@@ -66,7 +66,7 @@ const Notification = ():JSX.Element =>{
                         <Text style={{fontWeight:'bold',fontSize:16,letterSpacing:1}}>Notifications</Text>
                     </View>
                     <FlatList
-                        data={notifications?.Messages}
+                        data={notifications?.Messages.reverse()}
                         renderItem={(data)=><NotificationMessage key={data.index} message={data.item} mosqueName={selectedMosque.name} />}
                         scrollEnabled={true}
                         

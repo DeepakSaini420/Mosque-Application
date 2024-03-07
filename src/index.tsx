@@ -4,7 +4,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { useDispatch,useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Mosques, setMosques,setSelectedMosque,setPrayers,setCurrentMonthPrayers, Prayer } from './redux/mosques/mosqueSlice';
-import { getAllMosquesNames,getMosqueData,getMosquePrayers } from './api';
+import { getAllMosquesNames,getMosqueData,getMosquePrayers,getRealTimeUpdates } from './api';
 import { selectMosques,selectPrayer,selectSelectedMosque } from './redux/mosques/mosqueSelector';
 import NetInfo from '@react-native-community/netinfo';
 import Home from './screens/Home/Home.screen';
@@ -22,6 +22,8 @@ const Index = (): JSX.Element => {
 
   const  isConnected= useRef<boolean|null>(false);
 
+  const [hash,setHash] = useState<string>();
+
   const dispatch = useDispatch();
 
   const selectedMosque = useSelector(selectSelectedMosque);
@@ -38,6 +40,20 @@ const Index = (): JSX.Element => {
       const data1 = await AsyncStorage.getItem("Prayers");
     }
   });
+  
+  useEffect(()=>{
+    let unsub:any;
+    (async ()=>{
+      unsub = await getRealTimeUpdates((data:string)=>{
+        setHash(data);
+        console.log(data);
+      });
+    })();
+
+    return ()=>{
+      unsub ? unsub() : null;
+    }
+  },[]);
 
   useEffect(()=>{
 
@@ -55,7 +71,7 @@ const Index = (): JSX.Element => {
       }
     })();
 
-  },[]);
+  },[hash]);
   
   useEffect(()=>{
     (async()=>{
@@ -75,6 +91,18 @@ const Index = (): JSX.Element => {
         }
       })();
     }
+    if(isConnected.current && selectedMosque){
+      (async ()=>{
+        const prayer = await getMosquePrayers(selectedMosque.id);
+        dispatch(setPrayers(prayer));
+        AsyncStorage.setItem('Prayers',JSON.stringify(prayer));
+
+      })();
+    }
+    
+  },[selectedMosque,hash]);
+
+  useEffect(()=>{
     if(prayers.length === 0) {
       dispatch(setCurrentMonthPrayers([]));
     }
@@ -83,7 +111,7 @@ const Index = (): JSX.Element => {
             dispatch(setCurrentMonthPrayers(data.prayer));;
         }
     })
-  },[selectedMosque]);
+  },[prayers]);
 
 
   return (

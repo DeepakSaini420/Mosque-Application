@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { collection,doc,getDoc,onSnapshot,getFirestore, updateDoc, setDoc, Unsubscribe,getDocs } from 'firebase/firestore';
-import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword,GoogleAuthProvider,signInWithPopup, getRedirectResult, signOut } from 'firebase/auth'
+import { getAuth, createUserWithEmailAndPassword} from 'firebase/auth'
 import { Mosques,Prayer } from '../redux/mosques/mosqueSlice';
 // import { MosqueRef } from './collectionRef';
 
@@ -104,6 +104,7 @@ const addTokenToMosque = async(token:string,mosqueName:string) =>{
   }
 }
 
+
 const addMessageToMosque = async(message:string,mosqueName:string)=>{
   
   const notificationsRef = doc(db,"notifications",mosqueName);
@@ -149,46 +150,26 @@ const signUpUser = async(email:string,password:string)=>{
   }
 }
 
-const loginUser = async(email:string,password:string)=>{
-  try {
-    const data = await signInWithEmailAndPassword(auth,email,password);
-    return data;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-}
+const getRealTimeUpdates = async(callback:CallableFunction)=>{
+  const unsub = onSnapshot(doc(db,'isChange','change'),(doc)=>{
+    if(doc.exists()){
+      const data = doc.data();
+      const hash = data.hash;
 
-const signInWithGoogle = async()=>{
-  try {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth,provider);
-    const result = await getRedirectResult(auth);
-    console.log(result);
-  } catch (error) {
-    console.log(error);
-  }
-}
+      callback(hash);
+    }
+  })
 
-const SignOut = async()=>{
-  try {
-    await signOut(auth);
-    return true;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
+  return unsub;
 }
 
 export {
     getAllMosquesNames,
     getMosqueData,
     signUpUser,
-    loginUser,
     addTokenToMosque,
     getMosquePrayers,
     addMessageToMosque,
-    signInWithGoogle,
     getMessages,
-    SignOut
+    getRealTimeUpdates
 };
