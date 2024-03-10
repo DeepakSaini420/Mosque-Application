@@ -12,6 +12,12 @@ const TimeBoard = (): JSX.Element => {
     sunrise:''
   });
 
+  function setDay(date:Date, dayOfWeek:number) {
+    date = new Date(date.getTime ());
+    date.setDate(date.getDate() + (dayOfWeek + 7 - date.getDay()) % 7);
+    return date;
+  }
+
   useEffect(()=>{
     (async ()=>{
       try {
@@ -21,7 +27,7 @@ const TimeBoard = (): JSX.Element => {
         if(status!=='granted'){
           return;
         }
-
+        console.log(setDay(new Date(),5));
         const location = await Location.getCurrentPositionAsync();
         
         const data = await fetch(`https://api.sunrisesunset.io/json?lat=${location.coords.latitude}&lng=${location.coords.longitude}`);

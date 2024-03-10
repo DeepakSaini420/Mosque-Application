@@ -1,5 +1,5 @@
 import React,{ useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 import {StyleSheet, SafeAreaView, Platform,Text,View,TouchableOpacity,StatusBar } from 'react-native';
 import { selectSelectedMosque } from '../../redux/mosques/mosqueSelector';
 import TimeShower from '../../components/TimeShowe/TimeShower.compoent';
@@ -10,7 +10,6 @@ import MosqueList from '../../components/MosqueList/MosqueList.component';
 const Home = (): JSX.Element => {
 
   const [isMosqueSelected,setIsMosqueSelected] = useState<boolean>(false);
-  
   const mosqueName = useSelector(selectSelectedMosque);
 
   useEffect(()=>{
@@ -42,7 +41,7 @@ const Home = (): JSX.Element => {
 const styles = StyleSheet.create({
   HomeContainer: {
     flex: 1,
-    paddingTop:  Platform.OS === 'android' ? StatusBar.currentHeight:0 ,
+    // paddingTop:  Platform.OS === 'android' ? StatusBar.currentHeight:0 ,
     paddingLeft: 20,
     paddingRight: 20,
     backgroundColor: '#fff',

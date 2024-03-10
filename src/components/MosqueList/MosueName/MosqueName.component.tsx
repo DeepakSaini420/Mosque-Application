@@ -20,7 +20,7 @@ const MosqueName = ({name,id,location,Tokens,Messages}:Mosques)=>{
 
         // AsyncStorage.setItem('Prayers',JSON.stringify(prayer));
         
-        AsyncStorage.setItem('Mosque',JSON.stringify(mosque));
+        AsyncStorage.setItem('SelectedMosque',JSON.stringify(mosque));
         
         let token = await Notifications.getExpoPushTokenAsync({
             projectId: '66fbdec8-f5a2-4f30-95cd-89c6032e986f',

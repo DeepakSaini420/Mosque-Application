@@ -28,7 +28,6 @@ const TimeShower = (): JSX.Element => {
 
       if(hours>=0 && hours<12){
         setCurrentPrayer('Fajr');
-        console.log(currentMonthlyPrayers);
         setEndTime(`${currentMonthlyPrayers.length > 0 ? currentMonthlyPrayers[0].Fajr.iqama : '' }AM`);
       }
       if(hours>=12 && hours<15){

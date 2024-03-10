@@ -36,9 +36,21 @@ const Index = (): JSX.Element => {
 
     
     if(!state.isConnected){
-      const data = await AsyncStorage.getItem("Mosque");
-      const data1 = await AsyncStorage.getItem("Prayers");
+      const mosque = await AsyncStorage.getItem('SelectedMosque');
+
+      if(mosque){
+        dispatch(setSelectedMosque(JSON.parse(mosque)));
+      }
+
+      const prayers = await AsyncStorage.getItem("Prayers");
+        if(prayers){
+          dispatch(setPrayers(JSON.parse(prayers)));
+        }
+    }else{
+      const data = await getAllMosquesNames();
+      dispatch(setMosques(data));
     }
+
   });
   
   useEffect(()=>{
@@ -75,9 +87,10 @@ const Index = (): JSX.Element => {
   
   useEffect(()=>{
     (async()=>{
-      const mosque = await AsyncStorage.getItem("Mosque");
+      const mosque = await AsyncStorage.getItem("SelectedMosque");
+
       if(mosque){
-        setSelectedMosque(JSON.parse(mosque));
+        dispatch(setSelectedMosque(JSON.parse(mosque)));
       }
     })();
   },[]);
@@ -87,7 +100,7 @@ const Index = (): JSX.Element => {
       (async()=>{
         const prayers = await AsyncStorage.getItem("Prayers");
         if(prayers){
-          setPrayers(JSON.parse(prayers));
+         dispatch(setPrayers(JSON.parse(prayers)));
         }
       })();
     }

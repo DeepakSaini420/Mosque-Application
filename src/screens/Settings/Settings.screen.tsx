@@ -2,7 +2,6 @@ import React,{ useEffect, useState } from "react";
 import { SafeAreaView,Text,View,StyleSheet,Platform,Image,TouchableOpacity,StatusBar } from "react-native";
 import { useSelector,useDispatch } from "react-redux";
 import { selectSelectedMosque } from "../../redux/mosques/mosqueSelector";
-import { SignOut } from "../../api";
 import MosqueList from "../../components/MosqueList/MosqueList.component";
 
 const Settings = ():JSX.Element=>{
@@ -30,9 +29,6 @@ const Settings = ():JSX.Element=>{
                 <TouchableOpacity style={styles.setting} onPress={()=> setSelectMosque(true)}>
                     <Text>{ mosqueName ? `Selected Mosque: ${mosqueName.name}`:"Please Select A Mosque" } </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.setting} onPress={()=> SignOut()}>
-                    <Text>Logout</Text>
-                </TouchableOpacity>
             </View>
             
         </SafeAreaView>
@@ -41,7 +37,6 @@ const Settings = ():JSX.Element=>{
 
 const styles = StyleSheet.create({
     settingsContainer:{
-        paddingTop:Platform.OS === 'android' ? StatusBar.currentHeight:0,
         paddingLeft:10,
         paddingRight:10,
     },

@@ -5,6 +5,7 @@ import { selectSelectedMosque } from "../../redux/mosques/mosqueSelector";
 import { addMessageToMosque, getMessages } from "../../api";
 import NotificationMessage from "../../components/NotificationMessage/NotificationMessage.component";
 import * as Notifications from 'expo-notifications';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Notification = ():JSX.Element =>{
     const dispatch = useDispatch();
@@ -26,11 +27,13 @@ const Notification = ():JSX.Element =>{
             try {
                 unsubscribe = await getMessages(selectedMosque?.id || '',(Messages:any)=>{
                     setNotification(Messages);
+                    const data = JSON.stringify(Messages);
+                    AsyncStorage.setItem('Notification',data);
                 });
                 
             } catch (error) {
-                console.log(error);
-                setNotification(null);
+                const data = await AsyncStorage.getItem("Notification");
+                setNotification(JSON.parse(data|| ''));
             }
         })()
 
@@ -69,7 +72,6 @@ const Notification = ():JSX.Element =>{
                         data={notifications?.Messages.reverse()}
                         renderItem={(data)=><NotificationMessage key={data.index} message={data.item} mosqueName={selectedMosque.name} />}
                         scrollEnabled={true}
-                        
                     />
                 </View>
             ): <View>
@@ -81,7 +83,6 @@ const Notification = ():JSX.Element =>{
 
 const styles = StyleSheet.create({
     container:{
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
         flex:1,
         justifyContent:'center',
         alignItems:'center',

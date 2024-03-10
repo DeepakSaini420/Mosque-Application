@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { collection,doc,getDoc,onSnapshot,getFirestore, updateDoc, setDoc, Unsubscribe,getDocs } from 'firebase/firestore';
+import { collection,doc,getDoc,onSnapshot,getFirestore, updateDoc, setDoc, Unsubscribe,getDocs, query, orderBy, limit, where } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword} from 'firebase/auth'
 import { Mosques,Prayer } from '../redux/mosques/mosqueSlice';
 // import { MosqueRef } from './collectionRef';
@@ -124,7 +124,7 @@ const addMessageToMosque = async(message:string,mosqueName:string)=>{
 const getMessages = async(mosqueName:string,callback:CallableFunction):Promise<any>=>{
 
   const notificationsRef = doc(db,"notifications",mosqueName);
-
+  
   const unsubscribe =  onSnapshot(notificationsRef,(docSnap)=>{
     if(docSnap.exists()){
       console.log(docSnap.data());

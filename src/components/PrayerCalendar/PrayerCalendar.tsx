@@ -6,14 +6,16 @@ interface PrayerCalendar {
   duhur:string,
   fajr:string,
   maghrib:string,
-  isha:string
+  isha:string,
+  day:number
 }
 
-const PrayerCalendar = ({asr,duhur,fajr,maghrib,isha}:PrayerCalendar): JSX.Element => {
+const PrayerCalendar = ({asr,duhur,fajr,maghrib,isha,day}:PrayerCalendar): JSX.Element => {
+  console.log(asr,duhur,fajr);
   return (
     <View style={styles.PrayerContainer}>
       <View>
-        <Text style={styles.day}>1</Text>
+        <Text style={styles.day}>{day}</Text>
       </View>
       <View style={styles.Fajar}>
         <Text style={styles.time}>{fajr}</Text>

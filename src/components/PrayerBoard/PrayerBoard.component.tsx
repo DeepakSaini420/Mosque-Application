@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import { useSelector } from 'react-redux';
 import { selectCurrentMonthPrayer } from '../../redux/mosques/mosqueSelector';
-import Prayer from '../Prayer/Prayer.Component';
+import Prayer  from '../Prayer/Prayer.Component';
 
 const PrayerBoard = ({name,location}:{name:string,location:string}): JSX.Element => {
-
+  const [prayers,setPrayers] = useState<any>();
+  
   const currentMonthlyPrayers = useSelector(selectCurrentMonthPrayer); 
+  const currentDay = new Date().getDay();
 
-  console.log(currentMonthlyPrayers);
+  useEffect(()=>{
+    if(currentMonthlyPrayers.length === 0) {
+      console.log("hello")
+      setPrayers(null);
+      return;
+    }
+    currentMonthlyPrayers.forEach((data:any)=>data.day === 1 ? setPrayers(data):'');
+  },[currentMonthlyPrayers]);
+
 
   return (
     <View style={styles.container}>
@@ -18,13 +28,13 @@ const PrayerBoard = ({name,location}:{name:string,location:string}): JSX.Element
       </View>
       <View style={styles.prayerContainer}>
         {
-          currentMonthlyPrayers.length > 0 ? (
+          prayers ? (
             <>
-              <Prayer prayerName={'Fajr'} prayerTime={`${currentMonthlyPrayers[0].Fajr.adan} AM`} isLast={false} />
-              <Prayer prayerName={'Duhur'} prayerTime={`${currentMonthlyPrayers[0].Duhur.adan} PM`} isLast={false} />
-              <Prayer prayerName={'Asr'} prayerTime={currentMonthlyPrayers[0].Asr.adan.split(":")[0] > 12 ? `${currentMonthlyPrayers[0].Asr.adan.split(":")[0]-12}:${currentMonthlyPrayers[0].Asr.adan.split(":")[1]} PM`: `${currentMonthlyPrayers[0].Asr.adan} AM`} isLast={false} />
-              <Prayer prayerName={'Maghrib'} prayerTime={currentMonthlyPrayers[0].Maghrib.adan.split(":")[0] > 12 ? `${currentMonthlyPrayers[0].Maghrib.adan.split(":")[0]-12}:${currentMonthlyPrayers[0].Maghrib.adan.split(":")[1]} PM`: `${currentMonthlyPrayers[0].Maghrib.adan} AM`} isLast={false} />
-              <Prayer prayerName={'Isha'} prayerTime={currentMonthlyPrayers[0].Isha.adan.split(":")[0] > 12 ? `${currentMonthlyPrayers[0].Isha.adan.split(":")[0]-12}:${currentMonthlyPrayers[0].Isha.adan.split(":")[1]} PM`: `${currentMonthlyPrayers[0].Isha.adan} AM`} isLast={true} />
+              <Prayer prayerName={'Fajr'} prayerTime={`${prayers.Fajr.adan} AM`} isLast={false} />
+              <Prayer prayerName={'Duhur'} prayerTime={`${prayers.Duhur.adan} PM`} isLast={false} />
+              <Prayer prayerName={'Asr'} prayerTime={prayers.Asr.adan.split(":")[0] > 12 ? `${prayers.Asr.adan.split(":")[0]-12}:${prayers.Asr.adan.split(":")[1]} PM`: `${prayers.Asr.adan} AM`} isLast={false} />
+              <Prayer prayerName={'Maghrib'} prayerTime={prayers.Maghrib.adan.split(":")[0] > 12 ? `${prayers.Maghrib.adan.split(":")[0]-12}:${prayers.Maghrib.adan.split(":")[1]} PM`: `${prayers.Maghrib.adan} AM`} isLast={false} />
+              <Prayer prayerName={'Isha'} prayerTime={prayers.Isha.adan.split(":")[0] > 12 ? `${prayers.Isha.adan.split(":")[0]-12}:${prayers.Isha.adan.split(":")[1]} PM`: `${prayers.Isha.adan} AM`} isLast={true} />
             </>
           ):(
             <Text>No Prayers..</Text>
