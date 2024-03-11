@@ -1,6 +1,8 @@
-import React,{ useState,useEffect } from 'react';
+import React,{ useState,useEffect, useRef } from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import * as Location from 'expo-location';
+import NetInfo from '@react-native-community/netinfo'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TimeBoard = (): JSX.Element => {
 
@@ -12,6 +14,9 @@ const TimeBoard = (): JSX.Element => {
     sunrise:''
   });
 
+  const isConnected = useRef<boolean|null>(true);
+  NetInfo.addEventListener((state)=> isConnected.current=state.isConnected )
+
   function setDay(date:Date, dayOfWeek:number) {
     date = new Date(date.getTime ());
     date.setDate(date.getDate() + (dayOfWeek + 7 - date.getDay()) % 7);
@@ -19,31 +24,51 @@ const TimeBoard = (): JSX.Element => {
   }
 
   useEffect(()=>{
-    (async ()=>{
-      try {
-        
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        
-        if(status!=='granted'){
-          return;
+    if(!isConnected.current){
+      (async()=>{
+        const data = await AsyncStorage.getItem("SunsetSunrise");
+        if(data)
+        setSunsetSunrise(JSON.parse(data));
+      })();
+      return;
+    }
+    const inter = setInterval(()=>{
+      (async ()=>{
+        try {
+          
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          
+          if(status!=='granted'){
+            return;
+          }
+  
+          const location = await Location.getCurrentPositionAsync();
+          
+          const data = await fetch(`https://api.sunrisesunset.io/json?lat=${location.coords.latitude}&lng=${location.coords.longitude}`);
+          
+          const { results } = await data.json();
+  
+          setSunsetSunrise({
+            sunset:results.sunset,
+            sunrise:results.sunrise
+          })
+  
+        } catch (error) {
+          console.error('Error getting compass heading:', error);
         }
-        console.log(setDay(new Date(),5));
-        const location = await Location.getCurrentPositionAsync();
-        
-        const data = await fetch(`https://api.sunrisesunset.io/json?lat=${location.coords.latitude}&lng=${location.coords.longitude}`);
-        
-        const { results } = await data.json();
+      })();
 
-        setSunsetSunrise({
-          sunset:results.sunset,
-          sunrise:results.sunrise
-        })
+      if(sunsetSunrise.sunrise.length > 0 && sunsetSunrise.sunset.length>0){
+        AsyncStorage.setItem("SunsetSunrise",JSON.stringify(sunsetSunrise));
+        clearInterval(inter);
 
-      } catch (error) {
-        console.error('Error getting compass heading:', error);
       }
-    })();
-  },[])
+    },1000);
+
+    return ()=>{
+      clearInterval(inter);
+    }
+  },[isConnected.current])
 
   return (
     <View style={styles.container}>

@@ -3,8 +3,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { useDispatch,useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Mosques, setMosques,setSelectedMosque,setPrayers,setCurrentMonthPrayers, Prayer } from './redux/mosques/mosqueSlice';
-import { getAllMosquesNames,getMosqueData,getMosquePrayers,getRealTimeUpdates } from './api';
+import { Mosques, setMosques,setSelectedMosque,setPrayers,setCurrentMonthPrayers, Prayer,setNotifications } from './redux/mosques/mosqueSlice';
+import { getAllMosquesNames,getMosqueData,getMosquePrayers,getRealTimeUpdates,getMessages } from './api';
 import { selectMosques,selectPrayer,selectSelectedMosque } from './redux/mosques/mosqueSelector';
 import NetInfo from '@react-native-community/netinfo';
 import Home from './screens/Home/Home.screen';
@@ -36,16 +36,15 @@ const Index = (): JSX.Element => {
 
     
     if(!state.isConnected){
-      const mosque = await AsyncStorage.getItem('SelectedMosque');
-
-      if(mosque){
-        dispatch(setSelectedMosque(JSON.parse(mosque)));
+      try {
+        await AsyncStorage.setItem('SelectedMosque',JSON.stringify(selectMosques));
+  
+  
+        await AsyncStorage.setItem("Prayers",JSON.stringify(prayers));
+        
+      } catch (error) {
+        console.log(error);
       }
-
-      const prayers = await AsyncStorage.getItem("Prayers");
-        if(prayers){
-          dispatch(setPrayers(JSON.parse(prayers)));
-        }
     }else{
       const data = await getAllMosquesNames();
       dispatch(setMosques(data));
@@ -68,6 +67,30 @@ const Index = (): JSX.Element => {
   },[]);
 
   useEffect(()=>{
+    let unsubscribe:any;
+    (async ()=>{
+        try {
+            unsubscribe = await getMessages(selectedMosque?.id || '',(Messages:any)=>{
+                const data1 = { Messages:Messages.Messages.reverse(),...Messages };
+                console.log("Old ",data1);
+                dispatch(setNotifications(Messages));
+                console.log("New ",Messages.Messages);
+                const data = JSON.stringify(Messages.Messages);
+                AsyncStorage.setItem('Notification',data);
+            });
+            
+        } catch (error) {
+            const data = await AsyncStorage.getItem("Notification");
+            if(data) dispatch(setNotifications(JSON.parse(data)));
+        }
+    })()
+
+    return ()=>{
+        unsubscribe ? unsubscribe() : ''
+    }
+},[selectedMosque]);
+
+  useEffect(()=>{
 
     (async ()=>{
       try {
@@ -76,39 +99,36 @@ const Index = (): JSX.Element => {
         dispatch(setMosques(data));
         
       } catch (error) {
-        const data = await AsyncStorage.getItem("Mosque");
-        if(data){
-          dispatch(setMosques(JSON.parse(data)));
-        }
+        console.log(error)
       }
     })();
 
-  },[hash]);
+  },[hash,isConnected.current]);
   
   useEffect(()=>{
     (async()=>{
       const mosque = await AsyncStorage.getItem("SelectedMosque");
-
       if(mosque){
         dispatch(setSelectedMosque(JSON.parse(mosque)));
+
+        const prayers = await AsyncStorage.getItem("Prayers");
+        if(prayers) dispatch(setPrayers(JSON.parse(prayers)));
       }
     })();
   },[]);
 
   useEffect(()=>{
-    if(!isConnected.current && selectedMosque) {
-      (async()=>{
-        const prayers = await AsyncStorage.getItem("Prayers");
-        if(prayers){
-         dispatch(setPrayers(JSON.parse(prayers)));
-        }
-      })();
-    }
+    
     if(isConnected.current && selectedMosque){
       (async ()=>{
-        const prayer = await getMosquePrayers(selectedMosque.id);
-        dispatch(setPrayers(prayer));
-        AsyncStorage.setItem('Prayers',JSON.stringify(prayer));
+        try {
+          const prayer = await getMosquePrayers(selectedMosque.id);
+          dispatch(setPrayers(prayer));
+          AsyncStorage.setItem('Prayers',JSON.stringify(prayer));
+          
+        } catch (error) {
+          console.log(error);
+        }
 
       })();
     }

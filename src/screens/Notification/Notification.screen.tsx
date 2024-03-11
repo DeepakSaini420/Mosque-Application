@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView,StatusBar,StyleSheet,Platform,View, Button,Text, FlatList} from "react-native";
 import { useSelector,useDispatch } from "react-redux";
-import { selectSelectedMosque } from "../../redux/mosques/mosqueSelector";
+import { selectSelectedMosque,selectNotifications } from "../../redux/mosques/mosqueSelector";
 import { addMessageToMosque, getMessages } from "../../api";
 import NotificationMessage from "../../components/NotificationMessage/NotificationMessage.component";
 import * as Notifications from 'expo-notifications';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Notification = ():JSX.Element =>{
     const dispatch = useDispatch();
     const [token,setToken] = useState<string>();
-    const [notifications,setNotification] = useState<{name:string,Messages:string[]}|null>();
+    const [notifications,setNotifications] = useState<any>();
+    const Notfications = useSelector(selectNotifications);
+    console.log(Notfications)
     const selectedMosque = useSelector(selectSelectedMosque);
     useEffect(()=>{
         (async()=>{
@@ -21,26 +22,11 @@ const Notification = ():JSX.Element =>{
               console.log(token.data)
         })();
     },[dispatch])
-    useEffect(()=>{
-        let unsubscribe:any;
-        (async ()=>{
-            try {
-                unsubscribe = await getMessages(selectedMosque?.id || '',(Messages:any)=>{
-                    setNotification(Messages);
-                    const data = JSON.stringify(Messages);
-                    AsyncStorage.setItem('Notification',data);
-                });
-                
-            } catch (error) {
-                const data = await AsyncStorage.getItem("Notification");
-                setNotification(JSON.parse(data|| ''));
-            }
-        })()
 
-        return ()=>{
-            unsubscribe ? unsubscribe() : ''
-        }
-    },[selectedMosque]);
+    useEffect(()=>{
+        setNotifications(Notfications);
+    },[Notfications])
+    
     const onPress = async()=>{
         addMessageToMosque("Al-Aqusa mosque prayer updated","EzG9eEDHbSw7vVy2Varp");
         const body = JSON.stringify({
@@ -69,9 +55,10 @@ const Notification = ():JSX.Element =>{
                         <Text style={{fontWeight:'bold',fontSize:16,letterSpacing:1}}>Notifications</Text>
                     </View>
                     <FlatList
-                        data={notifications?.Messages.reverse()}
+                        data={notifications?.Messages}
                         renderItem={(data)=><NotificationMessage key={data.index} message={data.item} mosqueName={selectedMosque.name} />}
                         scrollEnabled={true}
+                        showsVerticalScrollIndicator={false}
                     />
                 </View>
             ): <View>

@@ -1,14 +1,20 @@
-import React,{ useEffect, useState } from "react";
+import React,{ useEffect, useRef, useState } from "react";
 import { SafeAreaView,Text,View,StyleSheet,Platform,Image,TouchableOpacity,StatusBar } from "react-native";
 import { useSelector,useDispatch } from "react-redux";
 import { selectSelectedMosque } from "../../redux/mosques/mosqueSelector";
 import MosqueList from "../../components/MosqueList/MosqueList.component";
+import NetInfo from '@react-native-community/netinfo';
+
 
 const Settings = ():JSX.Element=>{
 
     const mosqueName = useSelector(selectSelectedMosque);
-
+    const isConnected = useRef<boolean|null>(true);
     const [selectMosque,setSelectMosque] = useState<boolean>(false);
+
+    NetInfo.addEventListener((state)=>{
+        isConnected.current = state.isConnected;
+    });
 
     return (
         <SafeAreaView style={styles.settingsContainer} >
@@ -26,7 +32,11 @@ const Settings = ():JSX.Element=>{
                 </View>
             </View>
             <View style={styles.settingsSection}>
-                <TouchableOpacity style={styles.setting} onPress={()=> setSelectMosque(true)}>
+                <TouchableOpacity style={styles.setting} onPress={()=> {
+                        if(!isConnected.current) return; 
+                        setSelectMosque(true)
+                    }
+                }>
                     <Text>{ mosqueName ? `Selected Mosque: ${mosqueName.name}`:"Please Select A Mosque" } </Text>
                 </TouchableOpacity>
             </View>
