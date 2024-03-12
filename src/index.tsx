@@ -2,10 +2,10 @@ import React,{ useEffect, useRef, useState } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { useDispatch,useSelector } from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Mosques, setMosques,setSelectedMosque,setPrayers,setCurrentMonthPrayers, Prayer,setNotifications } from './redux/mosques/mosqueSlice';
-import { getAllMosquesNames,getMosqueData,getMosquePrayers,getRealTimeUpdates,getMessages } from './api';
+import { Mosques, setMosques,setSelectedMosque,setPrayers,setCurrentMonthPrayers,setNotifications } from './redux/mosques/mosqueSlice';
+import { getAllMosquesNames,getMosquePrayers,getRealTimeUpdates,getMessages } from './api';
 import { selectMosques,selectPrayer,selectSelectedMosque } from './redux/mosques/mosqueSelector';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import Home from './screens/Home/Home.screen';
 import Calendar from './screens/Calendar/Calendar.screen';
@@ -14,8 +14,6 @@ import Settings from './screens/Settings/Settings.screen';
 import Notification from './screens/Notification/Notification.screen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon1 from 'react-native-vector-icons/Feather';
-
-
 
 const Index = (): JSX.Element => {
   const Tab = createBottomTabNavigator();
@@ -31,10 +29,8 @@ const Index = (): JSX.Element => {
 
   NetInfo.addEventListener(async (state) => {
 
-    // setIsConnected(state.isConnected);
     isConnected.current = state.isConnected;
 
-    
     if(!state.isConnected){
       try {
         await AsyncStorage.setItem('SelectedMosque',JSON.stringify(selectMosques));
@@ -71,10 +67,11 @@ const Index = (): JSX.Element => {
     (async ()=>{
         try {
             unsubscribe = await getMessages(selectedMosque?.id || '',(Messages:any)=>{
-                const data1 = { Messages:Messages.Messages.reverse(),...Messages };
-                console.log("Old ",data1);
+                if(!Messages) {
+                  dispatch(setNotifications([]));
+                  return;
+                }
                 dispatch(setNotifications(Messages));
-                console.log("New ",Messages.Messages);
                 const data = JSON.stringify(Messages.Messages);
                 AsyncStorage.setItem('Notification',data);
             });
@@ -94,10 +91,23 @@ const Index = (): JSX.Element => {
 
     (async ()=>{
       try {
-        const data = await getAllMosquesNames();
-        console.log(data);
-        dispatch(setMosques(data));
+        const data:Mosques[] = await getAllMosquesNames();
         
+        dispatch(setMosques(data));
+
+        if(!selectedMosque) return;
+
+
+        const newMosqueData = data.find((mosque)=> mosque.id === selectedMosque.id );
+
+        if(!newMosqueData) return;
+        
+        if(JSON.stringify(newMosqueData) !== JSON.stringify(selectMosques)) {
+          dispatch(setSelectedMosque(newMosqueData));
+          AsyncStorage.setItem("SelectedMosque",JSON.stringify(newMosqueData));
+        }
+        
+
       } catch (error) {
         console.log(error)
       }

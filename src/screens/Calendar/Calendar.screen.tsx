@@ -27,11 +27,11 @@ const Calendar = (): JSX.Element => {
   
   console.log(prayer)
   return (
-    <GestureRecognizer style={styles.container} onSwipeLeft={()=> month<11 ? month+1 : month} onSwipeRight={()=> month<11 ? month+1 : month} >
+    <GestureRecognizer style={styles.container} onSwipeLeft={()=> setMonth(()=> month<11 ? month+1 : month)} onSwipeRight={()=> setMonth(()=> month>0 ? month-1 : month)} >
       <SafeAreaView >
         <View style={styles.monthContainer}>
           <View style={styles.month}>
-            <TouchableOpacity onPress={()=> setMonth(()=> month>0 ? month-1 : month)}>
+            <TouchableOpacity onPress={()=> setMonth(()=> month>0 ? month-1 : month)} >
               <Text >{'<'}</Text>
             </TouchableOpacity>
             <View>
@@ -77,7 +77,7 @@ const Calendar = (): JSX.Element => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingTop:  Platform.OS === 'android' ? StatusBar.currentHeight:0 ,
+    paddingTop:  Platform.OS === 'android' ? StatusBar.currentHeight:0 ,
     backgroundColor: '#fff',
     color: '#fff',
     paddingLeft: 10,
@@ -89,7 +89,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   month: {
+    width:"90%",
     flexDirection: 'row',
+    justifyContent:'space-between'
   },
   calTop: {
     flexDirection: 'row',

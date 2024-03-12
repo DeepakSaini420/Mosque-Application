@@ -1,6 +1,6 @@
-import React,{ useEffect, useRef, useState } from "react";
-import { SafeAreaView,Text,View,StyleSheet,Platform,Image,TouchableOpacity,StatusBar } from "react-native";
-import { useSelector,useDispatch } from "react-redux";
+import React,{useRef, useState } from "react";
+import { SafeAreaView,Text,View,StyleSheet,Image,TouchableOpacity,StatusBar } from "react-native";
+import { useSelector } from "react-redux";
 import { selectSelectedMosque } from "../../redux/mosques/mosqueSelector";
 import MosqueList from "../../components/MosqueList/MosqueList.component";
 import NetInfo from '@react-native-community/netinfo';
