@@ -55,7 +55,8 @@ const getMosqueData = ({ id }:{id:string}):Promise<Prayer[]> => {
 
 const getMosquePrayers = async (id:string):Promise<Prayer[]> =>{
   const prayersRef = collection(db,"mosques",id,"Prayers");
-  const prayerDocs = await getDocs(prayersRef);
+  const q = query(prayersRef,orderBy("month"));
+  const prayerDocs = await getDocs(q);
   const mosquePrayers:Prayer[] = [];
   prayerDocs.docs.map((doc:any)=>{
     const data = doc.data();

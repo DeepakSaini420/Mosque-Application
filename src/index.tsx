@@ -95,6 +95,7 @@ const Index = (): JSX.Element => {
         
         dispatch(setMosques(data));
 
+
         if(!selectedMosque) return;
 
 
@@ -150,7 +151,7 @@ const Index = (): JSX.Element => {
       dispatch(setCurrentMonthPrayers([]));
     }
     prayers.map((data:any)=>{
-        if(Number(data.month) === 3){
+        if(Number(data.month) === new Date().getMonth()+1){
             dispatch(setCurrentMonthPrayers(data.prayer));;
         }
     })

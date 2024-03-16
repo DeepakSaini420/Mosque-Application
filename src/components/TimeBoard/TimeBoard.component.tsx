@@ -1,5 +1,7 @@
 import React,{ useState,useEffect, useRef } from 'react';
 import {View, StyleSheet, Text} from 'react-native';
+import { selectCurrentMonthPrayer } from '../../redux/mosques/mosqueSelector';
+import { useSelector } from 'react-redux';
 import * as Location from 'expo-location';
 import NetInfo from '@react-native-community/netinfo'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,12 +9,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const TimeBoard = (): JSX.Element => {
 
   const [sunsetSunrise,setSunsetSunrise] = useState<{
-    sunset:string,
+    sunset?:string,
     sunrise:string
   }>({
     sunset:'',
     sunrise:''
   });
+
+  const [maghrib,setMaghrib] = useState<string>('');
+  const [jummah,setJummah] = useState<string>('');
+
+  const currentMonthlyPrayers = useSelector(selectCurrentMonthPrayer);
 
   const isConnected = useRef<boolean|null>(true);
   NetInfo.addEventListener((state)=> isConnected.current=state.isConnected )
@@ -58,10 +65,12 @@ const TimeBoard = (): JSX.Element => {
         }
       })();
 
-      if(sunsetSunrise.sunrise.length > 0 && sunsetSunrise.sunset.length>0){
+      if(sunsetSunrise.sunrise.length > 0){
         AsyncStorage.setItem("SunsetSunrise",JSON.stringify(sunsetSunrise));
         clearInterval(inter);
-
+      }
+      if(!isConnected.current){
+        clearInterval(inter);
       }
     },1000);
 
@@ -70,19 +79,31 @@ const TimeBoard = (): JSX.Element => {
     }
   },[isConnected.current])
 
+  useEffect(()=>{
+    if(currentMonthlyPrayers){
+      let timeCheck = Number(currentMonthlyPrayers[new Date().getDate() - 1].Maghrib.adan.split(':')[0]);
+      let time = '';
+      if(timeCheck>12){
+        let newTime = Number(currentMonthlyPrayers[new Date().getDate() - 1].Maghrib.adan.split(":")[0]) - 12;
+        time = `${newTime}:${currentMonthlyPrayers[new Date().getDate() - 1].Maghrib.adan.split(":")[1]} PM`;
+      } 
+      setMaghrib(timeCheck >= 12 ? time:`${currentMonthlyPrayers[new Date().getDate() - 1].Maghrib.adan} AM`);
+    }
+  },[currentMonthlyPrayers]);
+
   return (
     <View style={styles.container}>
       <View style={styles.SunriseContainer}>
-        <Text style={styles.Text}>Sunrise</Text>
+        <Text style={styles.Text}>Shuruq</Text>
         <Text style={styles.Time}>{sunsetSunrise.sunrise}</Text>
       </View>
       <View style={styles.SunsetContainer}>
-        <Text style={styles.Text}>Sunset</Text>
-        <Text style={styles.Time}>{sunsetSunrise.sunset}</Text>
+        <Text style={styles.Text}>Maghrib</Text>
+        <Text style={styles.Time}>{maghrib}</Text>
       </View>
       <View style={styles.SpecialDay}>
-        <Text style={styles.Text}>Friday Prayer</Text>
-        <Text style={styles.Time}>12:58 PM</Text>
+        <Text style={styles.Text}>Jummah</Text>
+        <Text style={styles.Time}>{jummah} PM</Text>
       </View>
     </View>
   );

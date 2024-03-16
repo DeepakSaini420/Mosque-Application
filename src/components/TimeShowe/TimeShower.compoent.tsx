@@ -28,19 +28,19 @@ const TimeShower = (): JSX.Element => {
 
       if(hours>=0 && hours<12){
         setCurrentPrayer('Fajr');
-        setEndTime(`${currentMonthlyPrayers.length > 0 ? currentMonthlyPrayers[0].Fajr.iqama : '' }AM`);
+        setEndTime(`${currentMonthlyPrayers.length >= date.getDate()-1 ? currentMonthlyPrayers[date.getDate()-1].Fajr.iqama : '' }AM`);
       }
       if(hours>=12 && hours<15){
         setCurrentPrayer('Duhur');
-        setEndTime(`${currentMonthlyPrayers.length > 0 ? currentMonthlyPrayers[0].Duhur.iqama : '' }PM`);
+        setEndTime(`${currentMonthlyPrayers.length >= date.getDate()-1 ? currentMonthlyPrayers[date.getDate()-1].Duhur.iqama : '' }PM`);
       }
       if(hours>=15 && hours<20){
         setCurrentPrayer('Maghrib');
-        setEndTime(`${currentMonthlyPrayers.length > 0 ? currentMonthlyPrayers[0].Maghrib.iqama : '' }PM`);
+        setEndTime(`${currentMonthlyPrayers.length >= date.getDate()-1 ? currentMonthlyPrayers[date.getDate()-1].Maghrib.iqama : '' }PM`);
       }
       if(hours>=20 && hours<=23){
         setCurrentPrayer('Isha');
-        setEndTime(`${currentMonthlyPrayers.length > 0 ? currentMonthlyPrayers[0].Isha.iqama : '' }PM`);
+        setEndTime(`${currentMonthlyPrayers.length >= date.getDate()-1 ? currentMonthlyPrayers[date.getDate()-1].Isha.iqama : '' }PM`);
       }
     }, 1000);
 
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   TimeContainer: {
     width: '100%',
     height: 210,
-    marginTop: 10,
+    marginTop:2,
     borderRadius: 30,
     backgroundColor: '#f8d3b9',
   },

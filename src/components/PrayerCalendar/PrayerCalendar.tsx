@@ -11,7 +11,6 @@ interface PrayerCalendar {
 }
 
 const PrayerCalendar = ({asr,duhur,fajr,maghrib,isha,day}:PrayerCalendar): JSX.Element => {
-  console.log(asr,duhur,fajr);
   return (
     <View style={styles.PrayerContainer}>
       <View>

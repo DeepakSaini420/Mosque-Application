@@ -2,6 +2,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import * as Notifications from 'expo-notifications'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface prayerProps {
   prayerName: string;
@@ -10,22 +11,22 @@ interface prayerProps {
 }
 
 async function setAlarm(prayerTime:string,prayerName:string){
-    const time = prayerTime.split(" ");
-    const state = time[1];
-    const HS = time[0].split(":");
-    const hours = state==="AM"? Number(HS[0]) : Number(HS[0])+12;
-    const minutes = Number(HS[1]);
-
-    const date = new Date();
-    const currentHours = date.getHours();
-    const currentMinutes = date.getMinutes();
-    const currentSeconds = date.getSeconds();
-
-    let differnce = ((hours * 3600) + (minutes*60)) - ((currentHours*3600) + (currentMinutes*60) +(currentSeconds));  
-    if (differnce <= 0) {
-      return 
-    }
-    console.log(differnce);
+  const time = prayerTime.split(" ");
+  const state = time[1];
+  const HS = time[0].split(":");
+  const hours = state==="AM"? Number(HS[0]) : Number(HS[0])+12;
+  const minutes = Number(HS[1]);
+  
+  const date = new Date();
+  const currentHours = date.getHours();
+  const currentMinutes = date.getMinutes();
+  const currentSeconds = date.getSeconds();
+  
+  let differnce = ((hours > 23 ? 0 : hours * 3600) + (minutes*60)) - ((currentHours*3600) + (currentMinutes*60) +(currentSeconds));
+  if (differnce <= 0) {
+    return 
+  }
+  console.log(differnce);
     const resp = await Notifications.scheduleNotificationAsync({
       content: {
         title: "Prayer Time!!!",
@@ -34,6 +35,26 @@ async function setAlarm(prayerTime:string,prayerName:string){
       },
       trigger: { seconds: differnce, },
     });
+    console.log(resp);
+    switch(prayerName){
+      case "Fajr":
+        await AsyncStorage.setItem("Fajr",resp);
+        break;
+      case "Duhur":
+        await AsyncStorage.setItem("Duhur",resp);
+        break;
+      case "Asr":
+        await AsyncStorage.setItem("Asr",resp);
+        break;
+      case "Maghrib":
+        await AsyncStorage.setItem("Maghrib",resp);
+        break;
+      case "Isha":
+        await AsyncStorage.setItem("Isha",resp);
+        break;
+      default:
+        break;
+    }
 }
 
 const Prayer = ({prayerName, prayerTime, isLast}: prayerProps): JSX.Element => {
@@ -42,6 +63,23 @@ const Prayer = ({prayerName, prayerTime, isLast}: prayerProps): JSX.Element => {
 
   const [iconName, setIconName] = useState('bell');
   let icon;
+
+  useEffect(()=>{
+    (async()=>{
+
+      const fajar = await AsyncStorage.getItem("Fajr");
+      const duhur = await AsyncStorage.getItem("Duhur");
+      const asr = await AsyncStorage.getItem("Asr");
+      const maghrib = await AsyncStorage.getItem("Maghrib");
+      const isha = await AsyncStorage.getItem("Isha");
+      if(fajar?.length) prayerName === "Fajr" ? setIconName("bell-off") : setIconName("bell");
+      if(duhur?.length) prayerName === "Duhur" ? setIconName("bell-off") : setIconName("bell");
+      if(asr?.length) prayerName === "Asr" ? setIconName("bell-off") : setIconName("bell");
+      if(maghrib?.length) prayerName === "Maghrib" ? setIconName("bell-off") : setIconName("bell");
+      if(isha?.length) prayerName === "Isha" ? setIconName("bell-off") : setIconName("bell");
+      
+    })();
+  },[]);
 
   useEffect(()=>{
     notificationListener.current = Notifications.addNotificationReceivedListener(async(notification) => {
@@ -85,8 +123,15 @@ const Prayer = ({prayerName, prayerTime, isLast}: prayerProps): JSX.Element => {
   }
 
   const onPress = async () => {
-    setAlarm(prayerTime,prayerName);
+    if(iconName === "bell-off"){
+      const data = await AsyncStorage.getItem(prayerName);
+      AsyncStorage.setItem(prayerName,"");
+      if(data) Notifications.cancelScheduledNotificationAsync(data);
+      setIconName('bell');
+      return;
+    }
     setIconName(iconName === 'bell' ? 'bell-off' : 'bell');
+    setAlarm(prayerTime,prayerName);
   };
 
   return (

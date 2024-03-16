@@ -8,17 +8,17 @@ const PrayerBoard = ({name,location}:{name:string,location:string}): JSX.Element
   const [prayers,setPrayers] = useState<any>();
   
   const currentMonthlyPrayers = useSelector(selectCurrentMonthPrayer); 
-  const currentDay = new Date().getDay();
+  const currentDay = new Date().getDate();
 
   useEffect(()=>{
     if(currentMonthlyPrayers.length === 0) {
-      console.log("hello")
       setPrayers(null);
       return;
     }
-    currentMonthlyPrayers.forEach((data:any)=>data.day === 1 ? setPrayers(data):'');
-  },[currentMonthlyPrayers]);
+    currentMonthlyPrayers.forEach((data:any)=>data.day === currentDay.toString() ? setPrayers(data):'');
+  },[currentMonthlyPrayers,currentDay]);
 
+  console.log(prayers);
 
   return (
     <View style={styles.container}>

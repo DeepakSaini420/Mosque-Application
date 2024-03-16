@@ -6,7 +6,7 @@ import React, {
   useImperativeHandle,
 } from "react";
 import PropTypes from "prop-types";
-import { Image, View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { Image, View, Text, StyleSheet, ActivityIndicator,Platform,StatusBar } from "react-native";
 import { Magnetometer } from "expo-sensors";
 import * as Location from "expo-location";
 
@@ -249,6 +249,7 @@ const QiblaCompass = forwardRef(
 const styles = StyleSheet.create({
   image: {
     resizeMode: "contain",
+    paddingTop:  Platform.OS === 'android' ? StatusBar.currentHeight:0 ,
     alignSelf: "center",
     position: "absolute",
     top: 0,
@@ -256,7 +257,7 @@ const styles = StyleSheet.create({
     height: 400,
   },
   container: {
-    backgroundColor: "#f00",
+    backgroundColor: "#fff",
     width:'100%',
     height:'100%',
     justifyContent: "center",

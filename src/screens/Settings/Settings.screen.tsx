@@ -1,5 +1,5 @@
 import React,{useRef, useState } from "react";
-import { SafeAreaView,Text,View,StyleSheet,Image,TouchableOpacity,StatusBar } from "react-native";
+import { SafeAreaView,Text,View,StyleSheet,Image,TouchableOpacity,StatusBar, Platform } from "react-native";
 import { useSelector } from "react-redux";
 import { selectSelectedMosque } from "../../redux/mosques/mosqueSelector";
 import MosqueList from "../../components/MosqueList/MosqueList.component";
@@ -47,6 +47,9 @@ const Settings = ():JSX.Element=>{
 
 const styles = StyleSheet.create({
     settingsContainer:{
+        flex:1,
+        backgroundColor:'#fff',
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
         paddingLeft:10,
         paddingRight:10,
     },
