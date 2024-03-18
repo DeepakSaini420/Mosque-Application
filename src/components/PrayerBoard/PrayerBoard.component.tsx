@@ -18,7 +18,6 @@ const PrayerBoard = ({name,location}:{name:string,location:string}): JSX.Element
     currentMonthlyPrayers.forEach((data:any)=>data.day === currentDay.toString() ? setPrayers(data):'');
   },[currentMonthlyPrayers,currentDay]);
 
-  console.log(prayers);
 
   return (
     <View style={styles.container}>

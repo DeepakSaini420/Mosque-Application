@@ -73,7 +73,6 @@ const styles = StyleSheet.create({
   TimeContainer: {
     width: '100%',
     height: 210,
-    marginTop:2,
     borderRadius: 30,
     backgroundColor: '#f8d3b9',
   },

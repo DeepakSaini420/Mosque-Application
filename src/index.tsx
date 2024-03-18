@@ -100,7 +100,6 @@ const Index = (): JSX.Element => {
 
 
         const newMosqueData = data.find((mosque)=> mosque.id === selectedMosque.id );
-
         if(!newMosqueData) return;
         
         if(JSON.stringify(newMosqueData) !== JSON.stringify(selectMosques)) {
@@ -156,6 +155,8 @@ const Index = (): JSX.Element => {
         }
     })
   },[prayers]);
+
+  console.log(selectedMosque);
 
 
   return (

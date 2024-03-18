@@ -39,8 +39,12 @@ async function registerForPushNotificationsAsync() {
       alert('Failed to get push token for push notification!');
       return;
     }
-    
-    token = (await Notifications.getExpoPushTokenAsync({ projectId: '66fbdec8-f5a2-4f30-95cd-89c6032e986f' })).data;
+    try {
+      token = (await Notifications.getExpoPushTokenAsync({ projectId: '66fbdec8-f5a2-4f30-95cd-89c6032e986f' })).data;
+      
+    } catch (error) {
+      console.log(error);
+    }
     console.log(token);
   } else {
     alert('Must use physical device for Push Notifications');
@@ -67,12 +71,16 @@ const App = (): JSX.Element => {
   },[]);
 
   useEffect(()=>{
-    registerForPushNotificationsAsync().then((token)=>{
-      console.log(token);
-    })
+    try {
+      registerForPushNotificationsAsync().then((token)=>{
+        console.log(token);
+      });
+    } catch (error) {
+      console.log(error);
+    }
 
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      console.log(notification);
+      console.log(notification.request.content.body);
     });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {

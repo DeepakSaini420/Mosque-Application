@@ -5,7 +5,8 @@ export interface Mosques{
     name:string,
     location:string,
     Messages:string[],
-    Tokens:string[]
+    Tokens:string[],
+    Jummah:string
 }
 
 export interface Prayer{

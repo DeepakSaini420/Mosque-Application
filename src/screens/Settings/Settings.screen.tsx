@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     settingsContainer:{
         flex:1,
         backgroundColor:'#fff',
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
         paddingLeft:10,
         paddingRight:10,
     },

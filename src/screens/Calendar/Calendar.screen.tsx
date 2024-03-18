@@ -25,7 +25,6 @@ const Calendar = (): JSX.Element => {
     })
   },[month,mosqueData])
   
-  console.log(mosqueData)
   return (
     <GestureRecognizer style={styles.container} onSwipeLeft={()=> setMonth(()=> month<11 ? month+1 : month)} onSwipeRight={()=> setMonth(()=> month>0 ? month-1 : month)} >
       <SafeAreaView >
@@ -76,9 +75,9 @@ const Calendar = (): JSX.Element => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop:  Platform.OS === 'android' ? StatusBar.currentHeight:0 ,
     flex:1,
     backgroundColor:'#fff',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     color: '#fff',
     paddingLeft: 10,
     paddingRight: 10,

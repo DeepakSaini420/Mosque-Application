@@ -21,20 +21,30 @@ async function setAlarm(prayerTime:string,prayerName:string){
   const currentHours = date.getHours();
   const currentMinutes = date.getMinutes();
   const currentSeconds = date.getSeconds();
+  console.log(currentHours,currentMinutes,currentSeconds);
   
-  let differnce = ((hours > 23 ? 0 : hours * 3600) + (minutes*60)) - ((currentHours*3600) + (currentMinutes*60) +(currentSeconds));
-  if (differnce <= 0) {
+  const currentTimeMillis = (currentHours * 3600 + currentMinutes * 60 + currentSeconds);
+  const desiredTimeMillis = (hours * 3600 + minutes * 60) ;
+
+  // Calculate the time difference in milliseconds
+  const timeDifferenceMillis = desiredTimeMillis - currentTimeMillis;
+
+  if (timeDifferenceMillis < 0) {
     return 
   }
-  console.log(differnce);
+  console.log(timeDifferenceMillis);
+
+  try {
+    
     const resp = await Notifications.scheduleNotificationAsync({
       content: {
         title: "Prayer Time!!!",
         body: `Time for your ${prayerName} Prayer!!`,
         data: { prayerName,prayerTime,not:"local" },
       },
-      trigger: { seconds: differnce, },
+      trigger: { seconds: timeDifferenceMillis},
     });
+
     console.log(resp);
     switch(prayerName){
       case "Fajr":
@@ -55,6 +65,10 @@ async function setAlarm(prayerTime:string,prayerName:string){
       default:
         break;
     }
+
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 const Prayer = ({prayerName, prayerTime, isLast}: prayerProps): JSX.Element => {
@@ -79,27 +93,7 @@ const Prayer = ({prayerName, prayerTime, isLast}: prayerProps): JSX.Element => {
       if(isha?.length) prayerName === "Isha" ? setIconName("bell-off") : setIconName("bell");
       
     })();
-  },[]);
-
-  useEffect(()=>{
-    notificationListener.current = Notifications.addNotificationReceivedListener(async(notification) => {
-      const data = notification.request.content.data ;
-      if(data.not !== "local") return;
-      if(data.prayerName === prayerName){
-        // setAlarm(prayerTime,prayerName);
-        setIconName( iconName==="bell" ? 'bell-off':"bell")
-      }
-
-    });
-
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log("resp",response);
-    });
-
-    return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
+    
   },[]);
 
   switch (prayerName) {

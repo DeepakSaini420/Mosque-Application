@@ -4,24 +4,12 @@ import { useSelector,useDispatch } from "react-redux";
 import { selectSelectedMosque,selectNotifications } from "../../redux/mosques/mosqueSelector";
 import { addMessageToMosque, getMessages } from "../../api";
 import NotificationMessage from "../../components/NotificationMessage/NotificationMessage.component";
-import * as Notifications from 'expo-notifications';
 
 const Notification = ():JSX.Element =>{
-    const dispatch = useDispatch();
-    const [token,setToken] = useState<string>();
     const [notifications,setNotifications] = useState<any>();
     const Notfications = useSelector(selectNotifications);
-    console.log(Notfications)
     const selectedMosque = useSelector(selectSelectedMosque);
-    useEffect(()=>{
-        (async()=>{
-            let token = await Notifications.getExpoPushTokenAsync({
-                projectId: '66fbdec8-f5a2-4f30-95cd-89c6032e986f',
-              });
-              setToken(token.data);
-              console.log(token.data)
-        })();
-    },[dispatch])
+
 
     useEffect(()=>{
         setNotifications(Notfications);

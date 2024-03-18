@@ -1,6 +1,6 @@
 import React,{ useState,useEffect, useRef } from 'react';
 import {View, StyleSheet, Text} from 'react-native';
-import { selectCurrentMonthPrayer } from '../../redux/mosques/mosqueSelector';
+import { selectCurrentMonthPrayer, selectSelectedMosque } from '../../redux/mosques/mosqueSelector';
 import { useSelector } from 'react-redux';
 import * as Location from 'expo-location';
 import NetInfo from '@react-native-community/netinfo'
@@ -20,6 +20,7 @@ const TimeBoard = (): JSX.Element => {
   const [jummah,setJummah] = useState<string>('');
 
   const currentMonthlyPrayers = useSelector(selectCurrentMonthPrayer);
+  const selectedMosque = useSelector(selectSelectedMosque);
 
   const isConnected = useRef<boolean|null>(true);
   NetInfo.addEventListener((state)=> isConnected.current=state.isConnected )
@@ -80,7 +81,12 @@ const TimeBoard = (): JSX.Element => {
   },[isConnected.current])
 
   useEffect(()=>{
-    if(currentMonthlyPrayers){
+    if(!selectedMosque) return;
+    setJummah(selectedMosque.Jummah);
+  },[selectedMosque]);
+
+  useEffect(()=>{
+    if(currentMonthlyPrayers.length>0){
       let timeCheck = Number(currentMonthlyPrayers[new Date().getDate() - 1].Maghrib.adan.split(':')[0]);
       let time = '';
       if(timeCheck>12){
@@ -88,6 +94,8 @@ const TimeBoard = (): JSX.Element => {
         time = `${newTime}:${currentMonthlyPrayers[new Date().getDate() - 1].Maghrib.adan.split(":")[1]} PM`;
       } 
       setMaghrib(timeCheck >= 12 ? time:`${currentMonthlyPrayers[new Date().getDate() - 1].Maghrib.adan} AM`);
+    }else{
+      setMaghrib('PM');
     }
   },[currentMonthlyPrayers]);
 
@@ -102,7 +110,7 @@ const TimeBoard = (): JSX.Element => {
         <Text style={styles.Time}>{maghrib}</Text>
       </View>
       <View style={styles.SpecialDay}>
-        <Text style={styles.Text}>Jummah</Text>
+        <Text style={styles.Text}>Jumu'ah</Text>
         <Text style={styles.Time}>{jummah} PM</Text>
       </View>
     </View>

@@ -41,7 +41,7 @@ const Home = (): JSX.Element => {
 const styles = StyleSheet.create({
   HomeContainer: {
     flex: 1,
-    paddingTop:  Platform.OS === 'android' ? StatusBar.currentHeight:0 ,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     paddingLeft: 20,
     paddingRight: 20,
     backgroundColor: '#fff',

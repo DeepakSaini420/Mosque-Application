@@ -17,14 +17,16 @@ export const useQiblaCompass = () => {
   const [error, setError] = useState<string|null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const initCompass = useCallback(async () => {
+  const initCompass = async () => {
     const isAvailable = await Magnetometer.isAvailableAsync();
     if (!isAvailable) {
       setError("Compass is not available on this device");
+      console.log("Not Available");
       setIsLoading(false);
       return;
     }
     let { status } = await Location.requestForegroundPermissionsAsync();
+    console.log(status);
     if (status !== "granted") {
       setError("Location permission not granted");
       setIsLoading(false);
@@ -32,14 +34,17 @@ export const useQiblaCompass = () => {
     }
 
     try {
-      let location = await Location.getCurrentPositionAsync({});
+      let location = await Location.getLastKnownPositionAsync({});
+      if(!location?.coords) return;
       const { latitude, longitude } = location.coords;
       calculate(latitude, longitude);
-    } finally {
+      console.log(latitude,longitude);
       setIsLoading(false);
       subscribe();
+    } finally {
+      
     }
-  }, []);
+  }
 
   useEffect(() => {
     initCompass();
@@ -135,7 +140,7 @@ export const useQiblaCompass = () => {
 
 const QiblaCompass = forwardRef(
   (
-    { backgroundColor = "transparent", color = "#000", textStyles = {} },
+    { },
     ref
   ) => {
     const {
@@ -158,11 +163,10 @@ const QiblaCompass = forwardRef(
       },
       []
     );
-
     if (isLoading) {
       return (
         <View style={[styles.container, { backgroundColor:"transparent" }]}>
-          <ActivityIndicator size={50} color={color} />
+          <ActivityIndicator size={50} color={"#000"} />
         </View>
       );
     }
@@ -177,17 +181,17 @@ const QiblaCompass = forwardRef(
               textAlign: "center",
               paddingHorizontal: 20,
               fontSize: 16,
-              ...textStyles,
+              ...{},
             }}
           >
             Error: {error}
           </Text>
         )}
         <View style={styles.direction}>
-          <Text style={[styles.directionText, { color, ...textStyles }]}>
+          <Text style={[styles.directionText, { color:"#000", ...{} }]}>
             {compassDirection}
           </Text>
-          <Text style={[styles.directionText, { color, ...textStyles }]}>
+          <Text style={[styles.directionText, { color:"#000", ...{} }]}>
             {compassDegree}°
           </Text>
         </View>
