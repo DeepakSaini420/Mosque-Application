@@ -8,20 +8,20 @@ interface prayerProps {
   prayerName: string;
   prayerTime: string;
   isLast: boolean;
+  id:string;
 }
 
-async function setAlarm(prayerTime:string,prayerName:string){
+async function setAlarm(prayerTime:string,prayerName:string,id:string){
   const time = prayerTime.split(" ");
   const state = time[1];
   const HS = time[0].split(":");
-  const hours = state==="AM"? Number(HS[0]) : Number(HS[0])+12;
+  const hours = state==="AM" || Number(HS[0])===12? Number(HS[0]) : Number(HS[0])+12;
   const minutes = Number(HS[1]);
   
   const date = new Date();
   const currentHours = date.getHours();
   const currentMinutes = date.getMinutes();
   const currentSeconds = date.getSeconds();
-  console.log(currentHours,currentMinutes,currentSeconds);
   
   const currentTimeMillis = (currentHours * 3600 + currentMinutes * 60 + currentSeconds);
   const desiredTimeMillis = (hours * 3600 + minutes * 60) ;
@@ -34,33 +34,32 @@ async function setAlarm(prayerTime:string,prayerName:string){
   }
   console.log(timeDifferenceMillis);
 
+
   try {
-    
     const resp = await Notifications.scheduleNotificationAsync({
       content: {
         title: "Prayer Time!!!",
         body: `Time for your ${prayerName} Prayer!!`,
         data: { prayerName,prayerTime,not:"local" },
       },
-      trigger: { seconds: timeDifferenceMillis},
+      trigger: { seconds: timeDifferenceMillis,channelId:"default",},
     });
 
-    console.log(resp);
     switch(prayerName){
       case "Fajr":
-        await AsyncStorage.setItem("Fajr",resp);
+        await AsyncStorage.setItem("Fajr",`${id}-${resp}`);
         break;
       case "Duhur":
-        await AsyncStorage.setItem("Duhur",resp);
+        await AsyncStorage.setItem("Duhur",`${id}-${resp}`);
         break;
       case "Asr":
-        await AsyncStorage.setItem("Asr",resp);
+        await AsyncStorage.setItem("Asr",`${id}-${resp}`);
         break;
       case "Maghrib":
-        await AsyncStorage.setItem("Maghrib",resp);
+        await AsyncStorage.setItem("Maghrib",`${id}-${resp}`);
         break;
       case "Isha":
-        await AsyncStorage.setItem("Isha",resp);
+        await AsyncStorage.setItem("Isha",`${id}-${resp}`);
         break;
       default:
         break;
@@ -71,10 +70,7 @@ async function setAlarm(prayerTime:string,prayerName:string){
   }
 }
 
-const Prayer = ({prayerName, prayerTime, isLast}: prayerProps): JSX.Element => {
-  const notificationListener = useRef<any>();
-  const responseListener = useRef<any>();
-
+const Prayer = ({prayerName, prayerTime, isLast, id}: prayerProps): JSX.Element => {
   const [iconName, setIconName] = useState('bell');
   let icon;
 
@@ -86,6 +82,7 @@ const Prayer = ({prayerName, prayerTime, isLast}: prayerProps): JSX.Element => {
       const asr = await AsyncStorage.getItem("Asr");
       const maghrib = await AsyncStorage.getItem("Maghrib");
       const isha = await AsyncStorage.getItem("Isha");
+
       if(fajar?.length) prayerName === "Fajr" ? setIconName("bell-off") : setIconName("bell");
       if(duhur?.length) prayerName === "Duhur" ? setIconName("bell-off") : setIconName("bell");
       if(asr?.length) prayerName === "Asr" ? setIconName("bell-off") : setIconName("bell");
@@ -119,13 +116,14 @@ const Prayer = ({prayerName, prayerTime, isLast}: prayerProps): JSX.Element => {
   const onPress = async () => {
     if(iconName === "bell-off"){
       const data = await AsyncStorage.getItem(prayerName);
+      const ids = data?.split("-");
       AsyncStorage.setItem(prayerName,"");
-      if(data) Notifications.cancelScheduledNotificationAsync(data);
+      if(ids && ids.length && ids[0]==id && ids[1]) await Notifications.cancelScheduledNotificationAsync(ids[1]);
       setIconName('bell');
       return;
     }
     setIconName(iconName === 'bell' ? 'bell-off' : 'bell');
-    setAlarm(prayerTime,prayerName);
+    setAlarm(prayerTime,prayerName,id);
   };
 
   return (

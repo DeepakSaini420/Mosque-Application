@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { collection,doc,getDoc,onSnapshot,getFirestore, updateDoc, setDoc, Unsubscribe,getDocs, query, orderBy, limit, where } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword} from 'firebase/auth'
 import { Mosques,Prayer } from '../redux/mosques/mosqueSlice';
+
 // import { MosqueRef } from './collectionRef';
 
 const firebaseConfig = {
@@ -85,13 +86,15 @@ const getMosquePrayers = async (id:string):Promise<Prayer[]> =>{
 
 const addTokenToMosque = async(token:string,mosqueName:string) =>{
   const mosqueRef = doc(db,"mosques",mosqueName);
+  const isChangeRef = doc(db,"isChange","change");
 
   const data = (await getDoc(mosqueRef)).data();
+
 
   let tokens:string[] = data?.Tokens || [];
 
   let isPresent = tokens.find(tok => token===tok);
-
+  console.log(data);
   if(isPresent) return;
 
   tokens.push(token);

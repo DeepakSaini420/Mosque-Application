@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectCurrentMonthPrayer } from '../../redux/mosques/mosqueSelector';
 import Prayer  from '../Prayer/Prayer.Component';
 
-const PrayerBoard = ({name,location}:{name:string,location:string}): JSX.Element => {
+const PrayerBoard = ({name,location,id}:{name:string,location:string,id:string}): JSX.Element => {
   const [prayers,setPrayers] = useState<any>();
   
   const currentMonthlyPrayers = useSelector(selectCurrentMonthPrayer); 
@@ -29,11 +29,11 @@ const PrayerBoard = ({name,location}:{name:string,location:string}): JSX.Element
         {
           prayers ? (
             <>
-              <Prayer prayerName={'Fajr'} prayerTime={`${prayers.Fajr.adan} AM`} isLast={false} />
-              <Prayer prayerName={'Duhur'} prayerTime={`${prayers.Duhur.adan} PM`} isLast={false} />
-              <Prayer prayerName={'Asr'} prayerTime={prayers.Asr.adan.split(":")[0] > 12 ? `${prayers.Asr.adan.split(":")[0]-12}:${prayers.Asr.adan.split(":")[1]} PM`: `${prayers.Asr.adan} AM`} isLast={false} />
-              <Prayer prayerName={'Maghrib'} prayerTime={prayers.Maghrib.adan.split(":")[0] > 12 ? `${prayers.Maghrib.adan.split(":")[0]-12}:${prayers.Maghrib.adan.split(":")[1]} PM`: `${prayers.Maghrib.adan} AM`} isLast={false} />
-              <Prayer prayerName={'Isha'} prayerTime={prayers.Isha.adan.split(":")[0] > 12 ? `${prayers.Isha.adan.split(":")[0]-12}:${prayers.Isha.adan.split(":")[1]} PM`: `${prayers.Isha.adan} AM`} isLast={true} />
+              <Prayer id={id} prayerName={'Fajr'} prayerTime={`${prayers.Fajr.adan} AM`} isLast={false} />
+              <Prayer id={id} prayerName={'Duhur'} prayerTime={`${prayers.Duhur.adan} PM`} isLast={false} />
+              <Prayer id={id} prayerName={'Asr'} prayerTime={prayers.Asr.adan.split(":")[0] > 12 ? `${prayers.Asr.adan.split(":")[0]-12}:${prayers.Asr.adan.split(":")[1]} PM`: `${prayers.Asr.adan} AM`} isLast={false} />
+              <Prayer id={id} prayerName={'Maghrib'} prayerTime={prayers.Maghrib.adan.split(":")[0] > 12 ? `${prayers.Maghrib.adan.split(":")[0]-12}:${prayers.Maghrib.adan.split(":")[1]} PM`: `${prayers.Maghrib.adan} AM`} isLast={false} />
+              <Prayer id={id} prayerName={'Isha'} prayerTime={prayers.Isha.adan.split(":")[0] > 12 ? `${prayers.Isha.adan.split(":")[0]-12}:${prayers.Isha.adan.split(":")[1]} PM`: `${prayers.Isha.adan} AM`} isLast={true} />
             </>
           ):(
             <Text>No Prayers..</Text>

@@ -35,7 +35,9 @@
     "react-native-swipe-gestures": "^1.0.5",
     "react-native-vector-icons": "^10.0.3",
     "react-redux": "^9.0.4",
-    "semver": "^7.5.2"
+    "semver": "^7.5.2",
+    "expo-task-manager": "~11.3.0",
+    "expo-crypto": "~12.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

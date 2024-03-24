@@ -7,26 +7,28 @@ import * as Notifications from 'expo-notifications';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
-const MosqueName = ({name,id,location,Tokens,Messages}:Mosques)=>{
+const MosqueName = ({name,id,location,Tokens,Messages,Jummah}:Mosques)=>{
     const dispatch = useDispatch();
 
     const onPress = async ()=>{
         const date = new Date();
 
         
-        const mosque = {name,id,location,Tokens,Messages};
+        const mosque = {name,id,location,Tokens,Messages,Jummah};
 
         dispatch(setSelectedMosque(mosque));
-
-        // AsyncStorage.setItem('Prayers',JSON.stringify(prayer));
         
         AsyncStorage.setItem('SelectedMosque',JSON.stringify(mosque));
         
-        let token = await Notifications.getExpoPushTokenAsync({
-            projectId: '66fbdec8-f5a2-4f30-95cd-89c6032e986f',
-        });
+        try {
+            let token = await Notifications.getExpoPushTokenAsync({
+                projectId: '66fbdec8-f5a2-4f30-95cd-89c6032e986f',
+            });
+            await addTokenToMosque(token.data,id);
+        } catch (error) {
+            console.log(error);
+        }
 
-        await addTokenToMosque(token.data,id);
     }
 
     return (

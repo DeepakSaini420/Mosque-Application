@@ -22,17 +22,23 @@ const Notification = ():JSX.Element =>{
             "sound": "default",
             "body": "Al-Aqusa mosque prayer updated"
         })
-        const resp = await fetch('https://exp.host/--/api/v2/push/send',{
-            method:'POST',
-            headers:{
-                "host": "exp.host",
-                "accept": "application/json",
-                "accept-encoding": "gzip, deflate",
-                "content-type": "application/json",
-            },
-            body:body
-        })
-        console.log(resp.status);
+        console.log(selectedMosque?.Tokens);
+        try {
+            
+            const resp = await fetch('https://exp.host/--/api/v2/push/send',{
+                method:'POST',
+                headers:{
+                    "host": "exp.host",
+                    "accept": "application/json",
+                    "accept-encoding": "gzip, deflate",
+                    "content-type": "application/json",
+                },
+                body:body
+            })
+            console.log(resp.status);
+        } catch (error) {
+            console.log(error);
+        }
     }
     
     return (
@@ -48,6 +54,7 @@ const Notification = ():JSX.Element =>{
                         scrollEnabled={true}
                         showsVerticalScrollIndicator={false}
                     />
+                    {/* <Button title="Send All" onPress={onPress}/> */}
                 </View>
             ): <View>
                     <Text>Please Select A Mosque</Text>

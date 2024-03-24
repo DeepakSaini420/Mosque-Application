@@ -37,6 +37,9 @@ const Index = (): JSX.Element => {
   
   
         await AsyncStorage.setItem("Prayers",JSON.stringify(prayers));
+
+        const data = await AsyncStorage.getItem("Notification");
+        if(data) dispatch(setNotifications(JSON.parse(data)));
         
       } catch (error) {
         console.log(error);
@@ -155,9 +158,6 @@ const Index = (): JSX.Element => {
         }
     })
   },[prayers]);
-
-  console.log(selectedMosque);
-
 
   return (
     <NavigationContainer>

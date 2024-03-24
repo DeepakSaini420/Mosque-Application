@@ -2,11 +2,10 @@ import React, { useEffect, useState,useRef } from 'react';
 import { Provider } from 'react-redux';
 import Index from './src';
 import store  from './src/redux/store';
-import { auth } from './src/api';
-import { onAuthStateChanged } from 'firebase/auth';
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import * as TaskManager from 'expo-task-manager';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -15,6 +14,12 @@ Notifications.setNotificationHandler({
     shouldSetBadge: false,
   }),
 });
+
+TaskManager.defineTask("BACKGROUND_NOTIFICATION_TASK", (_data) => {
+  console.log("IT WORKS!!!!!");
+});
+
+Notifications.registerTaskAsync("BACKGROUND_NOTIFICATION_TASK");
 
 async function registerForPushNotificationsAsync() {
   let token;
@@ -25,6 +30,7 @@ async function registerForPushNotificationsAsync() {
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FF231F7C',
+      
     });
   }
 
@@ -57,18 +63,6 @@ async function registerForPushNotificationsAsync() {
 const App = (): JSX.Element => {
   const notificationListener = useRef<any>();
   const responseListener = useRef<any>();
-  const [isLoggedIn,setIsLoggedIn] = useState<boolean>(false);
-
-  useEffect(()=>{
-    onAuthStateChanged(auth,(user)=>{
-      if(user){
-        console.log(user);
-        setIsLoggedIn(true);
-      }else{
-        setIsLoggedIn(false);
-      }
-    })
-  },[]);
 
   useEffect(()=>{
     try {

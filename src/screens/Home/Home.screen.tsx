@@ -23,7 +23,7 @@ const Home = (): JSX.Element => {
           <>
             <TimeShower />
             <TimeBoard />
-            <PrayerBoard name={mosqueName.name} location={mosqueName.location} />    
+            <PrayerBoard name={mosqueName.name} location={mosqueName.location} id={mosqueName.id} />    
           </>   
         ): (
           <View style={styles.cotainer}>
