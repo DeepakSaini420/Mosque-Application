@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "510333356445",
-    "project_id": "mosque-5260e",
-    "storage_bucket": "mosque-5260e.appspot.com"
+    "project_number": "445546297829",
+    "project_id": "tawfiiq-5d57e",
+    "storage_bucket": "tawfiiq-5d57e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:510333356445:android:1ddb37637bfe4444c4c774",
+        "mobilesdk_app_id": "1:445546297829:android:68bac909ffba7b936e170c",
         "android_client_info": {
           "package_name": "com.mosque.Mosque"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "510333356445-h7hcaqsh2bp53ra15vuppd5h2tpq6rdc.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDAnr9LvHCYNZvmKuG9i4moIVQagngBUk0"
+          "current_key": "AIzaSyCnaFdsaWTjzjmTyscGmBFzipHhiQ8IWYc"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "510333356445-h7hcaqsh2bp53ra15vuppd5h2tpq6rdc.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

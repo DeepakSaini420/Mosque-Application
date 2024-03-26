@@ -6,14 +6,14 @@ import { Mosques,Prayer } from '../redux/mosques/mosqueSlice';
 // import { MosqueRef } from './collectionRef';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAfCoirSuXCGdS6LUwoTapyktTm7_SwLsk",
-    authDomain: "mosque-5260e.firebaseapp.com",
-    projectId: "mosque-5260e",
-    storageBucket: "mosque-5260e.appspot.com",
-    messagingSenderId: "510333356445",
-    appId: "1:510333356445:web:5bbc5c78d4352e3ec4c774"
-  };
-
+  apiKey: "AIzaSyD38GkMapRJy39VXWpNvlVUcg0433zGZss",
+  authDomain: "tawfiiq-5d57e.firebaseapp.com",
+  projectId: "tawfiiq-5d57e",
+  storageBucket: "tawfiiq-5d57e.appspot.com",
+  messagingSenderId: "445546297829",
+  appId: "1:445546297829:web:05e398bf380c4d0a6e170c",
+  measurementId: "G-M66N6QFENR"
+};
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);

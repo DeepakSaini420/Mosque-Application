@@ -1,11 +1,9 @@
 import React, {
   useState,
   useEffect,
-  useCallback,
   forwardRef,
   useImperativeHandle,
 } from "react";
-import PropTypes from "prop-types";
 import { Image, View, Text, StyleSheet, ActivityIndicator,Platform,StatusBar } from "react-native";
 import { Magnetometer } from "expo-sensors";
 import * as Location from "expo-location";

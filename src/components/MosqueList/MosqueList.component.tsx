@@ -14,7 +14,7 @@ const MosqueList = ({}):JSX.Element => {
                 data={names}
                 showsHorizontalScrollIndicator={true}
                 renderItem={(data)=> {
-                    return <MosqueName location={data.item.location} id={data.item.id} key={data.item.id} Tokens={data.item.Tokens} Messages={data.item.Messages} name={data.item.name}/>
+                    return <MosqueName location={data.item.location} id={data.item.id} key={data.item.id} Tokens={data.item.Tokens} Messages={data.item.Messages} name={data.item.name} Jummah={data.item.Jummah}/>
                 }}
             />
         </View>
