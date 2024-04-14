@@ -170,7 +170,7 @@ const QiblaCompass = forwardRef(
     }
 
     return (
-      <View style={[styles.container, { backgroundColor:"transparent" }]}>
+      <View style={[styles.container, { backgroundColor:"#fff" }]}>
         {error && (
           <Text
             style={{

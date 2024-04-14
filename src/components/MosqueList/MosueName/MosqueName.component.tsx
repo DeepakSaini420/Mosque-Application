@@ -12,7 +12,6 @@ const MosqueName = ({name,id,location,Tokens,Messages,Jummah}:Mosques)=>{
 
     const onPress = async ()=>{
         const date = new Date();
-
         
         const mosque = {name,id,location,Tokens,Messages,Jummah};
 
@@ -22,7 +21,7 @@ const MosqueName = ({name,id,location,Tokens,Messages,Jummah}:Mosques)=>{
         
         try {
             let token = await Notifications.getExpoPushTokenAsync({
-                projectId: '66fbdec8-f5a2-4f30-95cd-89c6032e986f',
+                projectId: 'bed18b89-a6b2-414b-a2c1-4a3423223f78',
             });
             await addTokenToMosque(token.data,id);
         } catch (error) {

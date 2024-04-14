@@ -25,12 +25,6 @@ const TimeBoard = (): JSX.Element => {
   const isConnected = useRef<boolean|null>(true);
   NetInfo.addEventListener((state)=> isConnected.current=state.isConnected )
 
-  function setDay(date:Date, dayOfWeek:number) {
-    date = new Date(date.getTime ());
-    date.setDate(date.getDate() + (dayOfWeek + 7 - date.getDay()) % 7);
-    return date;
-  }
-
   useEffect(()=>{
     if(!isConnected.current){
       (async()=>{
@@ -110,7 +104,7 @@ const TimeBoard = (): JSX.Element => {
         <Text style={styles.Time}>{maghrib}</Text>
       </View>
       <View style={styles.SpecialDay}>
-        <Text style={styles.Text}>Jumu'ah</Text>
+        <Text style={styles.Text}>Jummah</Text>
         <Text style={styles.Time}>{jummah} PM</Text>
       </View>
     </View>

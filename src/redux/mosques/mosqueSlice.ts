@@ -19,7 +19,8 @@ interface initialState{
     selectedMosque: Mosques | null;
     Notifications: any;
     prayers: Prayer[];
-    currentMonthPrayers: any[]
+    currentMonthPrayers: any[],
+    nextMonthPrayer:any
 }
 
 const initialState:initialState = {
@@ -27,7 +28,8 @@ const initialState:initialState = {
     prayers: [],
     currentMonthPrayers:[],
     selectedMosque:null,
-    Notifications:[]
+    Notifications:[],
+    nextMonthPrayer:null
 }
 
 export const mosqueSlice = createSlice({
@@ -49,6 +51,9 @@ export const mosqueSlice = createSlice({
         },
         setNotifications:(state,action:PayloadAction<any[]>)=>{
             state.Notifications = action.payload;
+        },
+        setNextMonthPrayer:(state,action:PayloadAction<Prayer>)=>{
+            state.nextMonthPrayer = action.payload;
         }
     }
 });
@@ -58,7 +63,8 @@ export const {
     setPrayers,
     setSelectedMosque,
     setCurrentMonthPrayers,
-    setNotifications
+    setNotifications,
+    setNextMonthPrayer
 } = mosqueSlice.actions;
 
 export default mosqueSlice.reducer;

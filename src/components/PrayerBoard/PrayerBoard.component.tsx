@@ -29,11 +29,15 @@ const PrayerBoard = ({name,location,id}:{name:string,location:string,id:string})
         {
           prayers ? (
             <>
-              <Prayer id={id} prayerName={'Fajr'} prayerTime={`${prayers.Fajr.adan} AM`} isLast={false} />
-              <Prayer id={id} prayerName={'Duhur'} prayerTime={`${prayers.Duhur.adan} PM`} isLast={false} />
-              <Prayer id={id} prayerName={'Asr'} prayerTime={prayers.Asr.adan.split(":")[0] > 12 ? `${prayers.Asr.adan.split(":")[0]-12}:${prayers.Asr.adan.split(":")[1]} PM`: `${prayers.Asr.adan} AM`} isLast={false} />
-              <Prayer id={id} prayerName={'Maghrib'} prayerTime={prayers.Maghrib.adan.split(":")[0] > 12 ? `${prayers.Maghrib.adan.split(":")[0]-12}:${prayers.Maghrib.adan.split(":")[1]} PM`: `${prayers.Maghrib.adan} AM`} isLast={false} />
-              <Prayer id={id} prayerName={'Isha'} prayerTime={prayers.Isha.adan.split(":")[0] > 12 ? `${prayers.Isha.adan.split(":")[0]-12}:${prayers.Isha.adan.split(":")[1]} PM`: `${prayers.Isha.adan} AM`} isLast={true} />
+              <Prayer id={id} prayerName={'Fajr'} prayerTime={`${prayers.Fajr.adan} AM`} prayerEndTime={`${prayers.Fajr.iqama} AM`} isLast={false} />
+
+              <Prayer id={id} prayerName={'Duhur'} prayerTime={prayers.Duhur.adan.split(":")[0] > 12 ? `${prayers.Duhur.adan.split(":")[0]-12}:${prayers.Duhur.adan.split(":")[1]} PM`: `${prayers.Duhur.adan} AM`} prayerEndTime={prayers.Duhur.iqama.split(":")[0] > 12 ? `${prayers.Duhur.iqama.split(":")[0]-12}:${prayers.Duhur.iqama.split(":")[1]} PM`: `${prayers.Duhur.iqama} AM`} isLast={false} />
+
+              <Prayer id={id} prayerName={'Asr'} prayerTime={prayers.Asr.adan.split(":")[0] > 12 ? `${prayers.Asr.adan.split(":")[0]-12}:${prayers.Asr.adan.split(":")[1]} PM`: `${prayers.Asr.adan} AM`} prayerEndTime={prayers.Asr.iqama.split(":")[0] > 12 ? `${prayers.Asr.iqama.split(":")[0]-12}:${prayers.Asr.iqama.split(":")[1]} PM`: `${prayers.Asr.iqama} AM`} isLast={false} />
+
+              <Prayer id={id} prayerName={'Maghrib'} prayerTime={prayers.Maghrib.adan.split(":")[0] > 12 ? `${prayers.Maghrib.adan.split(":")[0]-12}:${prayers.Maghrib.adan.split(":")[1]} PM`: `${prayers.Maghrib.adan} AM`} prayerEndTime={prayers.Maghrib.iqama.split(":")[0] > 12 ? `${prayers.Maghrib.iqama.split(":")[0]-12}:${prayers.Maghrib.iqama.split(":")[1]} PM`: `${prayers.Maghrib.iqama} AM`} isLast={false} />
+
+              <Prayer id={id} prayerName={'Isha'} prayerTime={prayers.Isha.adan.split(":")[0] > 12 ? `${prayers.Isha.adan.split(":")[0]-12}:${prayers.Isha.adan.split(":")[1]} PM`: `${prayers.Isha.adan} AM`} prayerEndTime={prayers.Isha.iqama.split(":")[0] > 12 ? `${prayers.Isha.iqama.split(":")[0]-12}:${prayers.Isha.iqama.split(":")[1]} PM`: `${prayers.Isha.iqama} AM`} isLast={true} />
             </>
           ):(
             <Text>No Prayers..</Text>

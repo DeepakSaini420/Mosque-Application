@@ -9,3 +9,5 @@ export const selectPrayer = (state:RootState) => state.mosque.prayers;
 export const selectCurrentMonthPrayer = (state:RootState) => state.mosque.currentMonthPrayers;
 
 export const selectNotifications = (state:RootState) => state.mosque.Notifications;
+
+export const selectNextMonthPrayer = (state:RootState) => state.mosque.nextMonthPrayer;

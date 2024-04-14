@@ -1,8 +1,9 @@
 import React,{ useEffect, useRef, useState } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useDispatch,useSelector } from 'react-redux';
-import { Mosques, setMosques,setSelectedMosque,setPrayers,setCurrentMonthPrayers,setNotifications } from './redux/mosques/mosqueSlice';
+import { Mosques, setMosques,setSelectedMosque,setPrayers,setCurrentMonthPrayers,setNotifications, setNextMonthPrayer } from './redux/mosques/mosqueSlice';
 import { getAllMosquesNames,getMosquePrayers,getRealTimeUpdates,getMessages } from './api';
 import { selectMosques,selectPrayer,selectSelectedMosque } from './redux/mosques/mosqueSelector';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,9 +15,11 @@ import Settings from './screens/Settings/Settings.screen';
 import Notification from './screens/Notification/Notification.screen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon1 from 'react-native-vector-icons/Feather';
+import HijriGorgianCalendar from './screens/Hijri-Gorgian-Calendar/HijriGorgianCalendar';
+// import HijriGorgianCalendar from './screens/Hijri-Gorgian-Calendar/HijriGorgianCalendar';
 
 const Index = (): JSX.Element => {
-  const Tab = createBottomTabNavigator();
+  const Stack = createNativeStackNavigator();
 
   const  isConnected= useRef<boolean|null>(false);
 
@@ -52,11 +55,12 @@ const Index = (): JSX.Element => {
   });
   
   useEffect(()=>{
+
     let unsub:any;
     (async ()=>{
       unsub = await getRealTimeUpdates((data:string)=>{
         setHash(data);
-        console.log(data);
+        // console.log(data);
       });
     })();
 
@@ -74,6 +78,7 @@ const Index = (): JSX.Element => {
                   dispatch(setNotifications([]));
                   return;
                 }
+                Messages.Messages = Messages.Messages.reverse();
                 dispatch(setNotifications(Messages));
                 const data = JSON.stringify(Messages.Messages);
                 AsyncStorage.setItem('Notification',data);
@@ -98,9 +103,7 @@ const Index = (): JSX.Element => {
         
         dispatch(setMosques(data));
 
-
         if(!selectedMosque) return;
-
 
         const newMosqueData = data.find((mosque)=> mosque.id === selectedMosque.id );
         if(!newMosqueData) return;
@@ -156,12 +159,28 @@ const Index = (): JSX.Element => {
         if(Number(data.month) === new Date().getMonth()+1){
             dispatch(setCurrentMonthPrayers(data.prayer));;
         }
+        if(new Date().getMonth()+2 != 12 && Number(data.month)===new Date().getMonth()+2){
+          dispatch(setNextMonthPrayer(data.prayer[0]));
+        }
     })
   },[prayers]);
 
   return (
     <NavigationContainer>
-      <Tab.Navigator
+      <Stack.Navigator screenOptions={({route})=>({
+        headerShown:false
+      })}>
+        <Stack.Screen name='Home' component={TabNavigator}/>
+        <Stack.Screen name='HijriCalendar' component={HijriGorgianCalendar}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+function TabNavigator(){
+  const Tab = createBottomTabNavigator();
+  return(
+    <Tab.Navigator
         screenOptions={({route}) => ({
           headerShown: false,
           tabBarStyle: {
@@ -202,8 +221,7 @@ const Index = (): JSX.Element => {
         <Tab.Screen name="Notification" component={Notification} />
         <Tab.Screen name="Settings" component={Settings} />
       </Tab.Navigator>
-    </NavigationContainer>
-  );
-};
+  )
+}
 
 export default Index;

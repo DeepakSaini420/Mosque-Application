@@ -65,7 +65,7 @@ const Calendar = (): JSX.Element => {
           <FlatList
             data={prayer}
             showsVerticalScrollIndicator={false}
-            renderItem={(data) => <PrayerCalendar day={data.item.day} asr={data.item["Asr"].adan} duhur={data.item["Duhur"].adan} fajr={data.item["Fajr"].adan} isha={data.item["Isha"].adan} maghrib={data.item["Maghrib"].adan} />}
+            renderItem={(data) => <PrayerCalendar day={data.item.day} month={month} asr={data.item["Asr"].adan} duhur={data.item["Duhur"].adan} fajr={data.item["Fajr"].adan} isha={data.item["Isha"].adan} maghrib={data.item["Maghrib"].adan} />}
           />
         </View>
       </SafeAreaView>

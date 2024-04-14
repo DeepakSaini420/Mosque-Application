@@ -94,7 +94,7 @@ const addTokenToMosque = async(token:string,mosqueName:string) =>{
   let tokens:string[] = data?.Tokens || [];
 
   let isPresent = tokens.find(tok => token===tok);
-  console.log(data);
+  // console.log(data);
   if(isPresent) return;
 
   tokens.push(token);
@@ -131,7 +131,7 @@ const getMessages = async(mosqueName:string,callback:CallableFunction):Promise<a
   
   const unsubscribe =  onSnapshot(notificationsRef,(docSnap)=>{
     if(docSnap.exists()){
-      console.log(docSnap.data());
+      // console.log(docSnap.data());
       const Messages = docSnap.data().Messages;
       const name = docSnap.data().name;
       callback({Messages,name});

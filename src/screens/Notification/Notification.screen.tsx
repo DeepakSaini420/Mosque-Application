@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView,StatusBar,StyleSheet,Platform,View, Button,Text, FlatList} from "react-native";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectSelectedMosque,selectNotifications } from "../../redux/mosques/mosqueSelector";
-import { addMessageToMosque, getMessages } from "../../api";
 import NotificationMessage from "../../components/NotificationMessage/NotificationMessage.component";
 
 const Notification = ():JSX.Element =>{
@@ -16,7 +15,6 @@ const Notification = ():JSX.Element =>{
     },[Notfications])
     
     const onPress = async()=>{
-        addMessageToMosque("Al-Aqusa mosque prayer updated","9VgavXJ4KKOvFPxhXFm5");
         const body = JSON.stringify({
             "to": selectedMosque?.Tokens,
             "sound": "default",
@@ -54,7 +52,7 @@ const Notification = ():JSX.Element =>{
                         scrollEnabled={true}
                         showsVerticalScrollIndicator={false}
                     />
-                    <Button title="Send All" onPress={onPress}/>
+                    {/* <Button title="Send All" onPress={onPress}/> */}
                 </View>
             ): <View>
                     <Text>Please Select A Mosque</Text>

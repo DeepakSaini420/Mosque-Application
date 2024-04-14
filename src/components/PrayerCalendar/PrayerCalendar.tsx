@@ -7,29 +7,31 @@ interface PrayerCalendar {
   fajr:string,
   maghrib:string,
   isha:string,
-  day:number
+  day:number,
+  month:number
 }
 
-const PrayerCalendar = ({asr,duhur,fajr,maghrib,isha,day}:PrayerCalendar): JSX.Element => {
+const PrayerCalendar = ({asr,duhur,fajr,maghrib,isha,day,month}:PrayerCalendar): JSX.Element => {
+  const date = new Date();
   return (
     <View style={styles.PrayerContainer}>
       <View>
-        <Text style={styles.day}>{day}</Text>
+        <Text style={[styles.day, Number(day)===date.getDate() && date.getMonth()===month ? {fontWeight:'bold'} :{}]}>{day}</Text>
       </View>
       <View style={styles.Fajar}>
-        <Text style={styles.time}>{fajr}</Text>
+        <Text style={[styles.time,Number(day)===date.getDate() && date.getMonth()===month ? {fontWeight:'bold'} :{}]}>{fajr}</Text>
       </View>
       <View style={styles.Duhur}>
-        <Text style={styles.time}>{duhur}</Text>
+        <Text style={[styles.time,Number(day)===date.getDate() && date.getMonth()===month ? {fontWeight:'bold'} :{}]}>{duhur}</Text>
       </View>
       <View style={styles.Asr}>
-        <Text style={styles.time}>{asr}</Text>
+        <Text style={[styles.time,Number(day)===date.getDate() && date.getMonth()===month ? {fontWeight:'bold'} :{}]}>{asr}</Text>
       </View>
       <View style={styles.Maghrib}>
-        <Text style={styles.time}>{maghrib}</Text>
+        <Text style={[styles.time,Number(day)===date.getDate() && date.getMonth()===month ? {fontWeight:'bold'} :{}]}>{maghrib}</Text>
       </View>
       <View style={styles.Isha}>
-        <Text style={styles.time}>{isha}</Text>
+        <Text style={[styles.time,Number(day)===date.getDate() && date.getMonth()===month ? {fontWeight:'bold'} :{}]}>{isha}</Text>
       </View>
     </View>
   );

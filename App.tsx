@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import Index from './src';
 import store  from './src/redux/store';
 import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import * as TaskManager from 'expo-task-manager';
@@ -73,12 +74,17 @@ const App = (): JSX.Element => {
       console.log(error);
     }
 
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      console.log(notification.request.content.body);
+    notificationListener.current = Notifications.addNotificationReceivedListener(async(notification) => {
+      if(notification.request.content.data.local=="local"){
+        await AsyncStorage.setItem(`${notification.request.content.data.id}-${notification.request.content.data.prayerName}`,"");
+      }
     });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(async (response) => {
+      if(response.notification.request.content.data.local=="local"){
+        await AsyncStorage.setItem(`${response.notification.request.content.data.id}-${response.notification.request.content.data.prayerName}`,"");
+
+      }
     });
 
     return () => {
