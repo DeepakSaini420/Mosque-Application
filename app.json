@@ -20,6 +20,13 @@
         {
           "calendarPermission": "The app needs to access your calendar."
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#000000",
+          "sounds": ["./assets/adan.wav"]
+        }
       ]
     ],
     "ios": {

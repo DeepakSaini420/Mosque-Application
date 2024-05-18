@@ -16,6 +16,7 @@ import Notification from './screens/Notification/Notification.screen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon1 from 'react-native-vector-icons/Feather';
 import HijriGorgianCalendar from './screens/Hijri-Gorgian-Calendar/HijriGorgianCalendar';
+import { responsiveHeight } from 'react-native-responsive-dimensions';
 // import HijriGorgianCalendar from './screens/Hijri-Gorgian-Calendar/HijriGorgianCalendar';
 
 const Index = (): JSX.Element => {
@@ -185,9 +186,9 @@ function TabNavigator(){
           headerShown: false,
           tabBarStyle: {
             position: 'absolute',
-            height: 60,
-            left: 12,
-            bottom: 20,
+            height: responsiveHeight(6.5),
+            left: responsiveHeight(1.45),
+            bottom: responsiveHeight(1.3),
             width: '95%',
             backgroundColor: '#fbf4ee',
             borderRadius: 6,

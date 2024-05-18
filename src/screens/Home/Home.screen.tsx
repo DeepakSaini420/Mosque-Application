@@ -6,6 +6,7 @@ import TimeShower from '../../components/TimeShowe/TimeShower.compoent';
 import TimeBoard from '../../components/TimeBoard/TimeBoard.component';
 import PrayerBoard from '../../components/PrayerBoard/PrayerBoard.component';
 import MosqueList from '../../components/MosqueList/MosqueList.component';
+import HijriDate from '../../components/HijriDate/HijriData.component';
 
 const Home = (): JSX.Element => {
 
@@ -23,6 +24,7 @@ const Home = (): JSX.Element => {
           <>
             <TimeShower />
             <TimeBoard />
+            <HijriDate/>
             <PrayerBoard name={mosqueName.name} location={mosqueName.location} id={mosqueName.id} />    
           </>   
         ): (
@@ -41,7 +43,7 @@ const Home = (): JSX.Element => {
 const styles = StyleSheet.create({
   HomeContainer: {
     flex: 1,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     paddingLeft: 20,
     paddingRight: 20,
     backgroundColor: '#fff',

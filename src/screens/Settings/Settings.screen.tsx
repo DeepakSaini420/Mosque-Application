@@ -39,9 +39,9 @@ const Settings = ({navigation}:{navigation:any}):JSX.Element=>{
                 }>
                     <Text>{ mosqueName ? `Selected Mosque: ${mosqueName.name}`:"Please Select A Mosque" } </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.setting} onPress={()=> navigation.navigate("HijriCalendar")}>
+                {/* <TouchableOpacity style={styles.setting} onPress={()=> navigation.navigate("HijriCalendar")}>
                     <Text>Calendar</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
             
         </SafeAreaView>

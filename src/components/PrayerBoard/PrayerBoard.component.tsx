@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import { useSelector } from 'react-redux';
 import { selectCurrentMonthPrayer } from '../../redux/mosques/mosqueSelector';
+import { RFValue } from 'react-native-responsive-fontsize';
 import Prayer  from '../Prayer/Prayer.Component';
+import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
 
 const PrayerBoard = ({name,location,id}:{name:string,location:string,id:string}): JSX.Element => {
   const [prayers,setPrayers] = useState<any>();
@@ -29,15 +31,15 @@ const PrayerBoard = ({name,location,id}:{name:string,location:string,id:string})
         {
           prayers ? (
             <>
-              <Prayer id={id} prayerName={'Fajr'} prayerTime={`${prayers.Fajr.adan} AM`} prayerEndTime={`${prayers.Fajr.iqama} AM`} isLast={false} />
+              <Prayer id={id} prayerName={'Fajr'} prayerTime={`${prayers.Fajr.adan}`} prayerEndTime={`${prayers.Fajr.iqama}`} isLast={false} />
 
-              <Prayer id={id} prayerName={'Duhur'} prayerTime={prayers.Duhur.adan.split(":")[0] > 12 ? `${prayers.Duhur.adan.split(":")[0]-12}:${prayers.Duhur.adan.split(":")[1]} PM`: `${prayers.Duhur.adan} AM`} prayerEndTime={prayers.Duhur.iqama.split(":")[0] > 12 ? `${prayers.Duhur.iqama.split(":")[0]-12}:${prayers.Duhur.iqama.split(":")[1]} PM`: `${prayers.Duhur.iqama} AM`} isLast={false} />
+              <Prayer id={id} prayerName={'Duhur'} prayerTime={prayers.Duhur.adan} prayerEndTime={prayers.Duhur.iqama} isLast={false} />
 
-              <Prayer id={id} prayerName={'Asr'} prayerTime={prayers.Asr.adan.split(":")[0] > 12 ? `${prayers.Asr.adan.split(":")[0]-12}:${prayers.Asr.adan.split(":")[1]} PM`: `${prayers.Asr.adan} AM`} prayerEndTime={prayers.Asr.iqama.split(":")[0] > 12 ? `${prayers.Asr.iqama.split(":")[0]-12}:${prayers.Asr.iqama.split(":")[1]} PM`: `${prayers.Asr.iqama} AM`} isLast={false} />
+              <Prayer id={id} prayerName={'Asr'} prayerTime={prayers.Asr.adan} prayerEndTime={prayers.Asr.iqama} isLast={false} />
 
-              <Prayer id={id} prayerName={'Maghrib'} prayerTime={prayers.Maghrib.adan.split(":")[0] > 12 ? `${prayers.Maghrib.adan.split(":")[0]-12}:${prayers.Maghrib.adan.split(":")[1]} PM`: `${prayers.Maghrib.adan} AM`} prayerEndTime={prayers.Maghrib.iqama.split(":")[0] > 12 ? `${prayers.Maghrib.iqama.split(":")[0]-12}:${prayers.Maghrib.iqama.split(":")[1]} PM`: `${prayers.Maghrib.iqama} AM`} isLast={false} />
+              <Prayer id={id} prayerName={'Maghrib'} prayerTime={prayers.Maghrib.adan} prayerEndTime={prayers.Maghrib.iqama} isLast={false} />
 
-              <Prayer id={id} prayerName={'Isha'} prayerTime={prayers.Isha.adan.split(":")[0] > 12 ? `${prayers.Isha.adan.split(":")[0]-12}:${prayers.Isha.adan.split(":")[1]} PM`: `${prayers.Isha.adan} AM`} prayerEndTime={prayers.Isha.iqama.split(":")[0] > 12 ? `${prayers.Isha.iqama.split(":")[0]-12}:${prayers.Isha.iqama.split(":")[1]} PM`: `${prayers.Isha.iqama} AM`} isLast={true} />
+              <Prayer id={id} prayerName={'Isha'} prayerTime={prayers.Isha.adan} prayerEndTime={prayers.Isha.iqama} isLast={true} />
             </>
           ):(
             <Text>No Prayers..</Text>
@@ -52,24 +54,24 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     backgroundColor: '#fbf4ee',
-    height: 390,
+    height: responsiveHeight(48),
     borderRadius: 25,
-    marginTop: 20,
-    padding: 18,
+    marginTop: responsiveHeight(0.5),
+    padding: responsiveHeight(1.8),
   },
   LocationContainer: {},
   MosqueName: {
     color: '#000',
-    fontSize: 23,
+    fontSize: responsiveFontSize(3.7),
     fontWeight: 'bold',
   },
   prayerContainer: {
-    marginTop: 8,
+    marginTop: RFValue(8),
   },
   loaction: {
     color: '#8c8a8f',
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: responsiveFontSize(2.5),
     letterSpacing: 0.5,
   },
 });

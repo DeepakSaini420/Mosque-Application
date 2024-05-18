@@ -2,6 +2,11 @@ import React,{ useState,useEffect, useRef } from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import { selectCurrentMonthPrayer, selectSelectedMosque } from '../../redux/mosques/mosqueSelector';
 import { useSelector } from 'react-redux';
+import {
+  responsiveHeight,
+  responsiveWidth,
+  responsiveFontSize
+} from "react-native-responsive-dimensions";
 import * as Location from 'expo-location';
 import NetInfo from '@react-native-community/netinfo'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -49,10 +54,9 @@ const TimeBoard = (): JSX.Element => {
           const data = await fetch(`https://api.sunrisesunset.io/json?lat=${location.coords.latitude}&lng=${location.coords.longitude}`);
           
           const { results } = await data.json();
-  
           setSunsetSunrise({
             sunset:results.sunset,
-            sunrise:results.sunrise
+            sunrise:results.sunrise ? results.sunrise.split(" ")[0] :""
           })
   
         } catch (error) {
@@ -60,14 +64,16 @@ const TimeBoard = (): JSX.Element => {
         }
       })();
 
-      if(sunsetSunrise.sunrise.length > 0){
-        AsyncStorage.setItem("SunsetSunrise",JSON.stringify(sunsetSunrise));
-        clearInterval(inter);
-      }
+      
       if(!isConnected.current){
         clearInterval(inter);
       }
     },1000);
+
+    if(sunsetSunrise.sunrise.length > 0){
+      AsyncStorage.setItem("SunsetSunrise",JSON.stringify(sunsetSunrise));
+      clearInterval(inter);
+    }
 
     return ()=>{
       clearInterval(inter);
@@ -81,13 +87,7 @@ const TimeBoard = (): JSX.Element => {
 
   useEffect(()=>{
     if(currentMonthlyPrayers.length>0){
-      let timeCheck = Number(currentMonthlyPrayers[new Date().getDate() - 1].Maghrib.adan.split(':')[0]);
-      let time = '';
-      if(timeCheck>12){
-        let newTime = Number(currentMonthlyPrayers[new Date().getDate() - 1].Maghrib.adan.split(":")[0]) - 12;
-        time = `${newTime}:${currentMonthlyPrayers[new Date().getDate() - 1].Maghrib.adan.split(":")[1]} PM`;
-      } 
-      setMaghrib(timeCheck >= 12 ? time:`${currentMonthlyPrayers[new Date().getDate() - 1].Maghrib.adan} AM`);
+      setMaghrib(`${currentMonthlyPrayers[new Date().getDate() - 1].Maghrib.adan}`);
     }else{
       setMaghrib('PM');
     }
@@ -105,7 +105,7 @@ const TimeBoard = (): JSX.Element => {
       </View>
       <View style={styles.SpecialDay}>
         <Text style={styles.Text}>Jummah</Text>
-        <Text style={styles.Time}>{jummah} PM</Text>
+        <Text style={styles.Time}>{jummah}</Text>
       </View>
     </View>
   );
@@ -114,9 +114,9 @@ const TimeBoard = (): JSX.Element => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 65,
+    height: responsiveHeight(8),
     backgroundColor: '#fbf4ee',
-    marginTop: 25,
+    marginTop: 15,
     flexDirection: 'row',
     padding: 8,
   },

@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from 'react';
+import React, { useEffect,useRef } from 'react';
 import { Provider } from 'react-redux';
 import Index from './src';
 import store  from './src/redux/store';
@@ -33,6 +33,18 @@ async function registerForPushNotificationsAsync() {
       lightColor: '#FF231F7C',
       
     });
+
+    await Notifications.setNotificationChannelAsync('Alarm',{
+      name: 'Alarm',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+      sound:'adan.wav',
+      audioAttributes: {
+        usage: Notifications.AndroidAudioUsage.NOTIFICATION_RINGTONE,
+        contentType: Notifications.AndroidAudioContentType.SONIFICATION,
+      },
+    })
   }
 
   if (Device.isDevice) {

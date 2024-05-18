@@ -17,7 +17,7 @@ export default function HijriCalendar({navigation}:{navigation:any}) {
 
   // Function to convert Gregorian date to Hijri
   const convertToIslamicDate = (date:any) => {
-    return moment(date).format('iYYYY/iM/iD');
+    return moment(date).format('iD/iM/iYYYY');
   };
 
   // Function to determine if a date is beyond the end of the current Hijri month
@@ -39,7 +39,6 @@ export default function HijriCalendar({navigation}:{navigation:any}) {
         <CalendarPicker
           onDateChange={handleDateChange}
           textStyle={{
-            fontFamily: 'Arial',
             color: '#000000',
           }}
           scaleFactor={375}
